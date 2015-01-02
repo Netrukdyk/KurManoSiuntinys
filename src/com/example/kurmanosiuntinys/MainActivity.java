@@ -75,7 +75,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			startActivity(intent);
 			return true;
 		case R.id.action_refresh:
-			new Tikrinti().execute("RT123456789LT", "sdfasdfsdf");
+			new Tikrinti().execute("RT123456789LT", "CN123456789LT");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -126,6 +126,12 @@ public class MainActivity extends Activity implements OnClickListener {
 				
 				for (Element number:data) {
 					result += number.text()+"\n\n";
+					number.hasText();
+					//number.ha
+					/* Neteisingas siuntos numerio formatas
+					 * Pagal pateiktà siuntos numerá, duomenø rasti nepavyko.
+					 * Table ... 
+					 */
 				}
 				
 		// --------- End Parse HTML ----------------------------------------
