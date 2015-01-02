@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Kur mano siuntinys</string>
+    <string name="action_about">Apie</string>
+    <string name="action_refresh">Atnaujinti</string>       
+    <string name="Status">Status</string>
+    <string name="empty"></string>
+    <string name="server">Server</string>
+</resources>

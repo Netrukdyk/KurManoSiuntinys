@@ -1,0 +1,30 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFD400" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context="${relativePackage}.${activityClass}" >
+
+        <TextView
+            android:id="@+id/in"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="RT123456789LT"
+            android:textColor="@android:color/primary_text_light" />
+
+        <TextView
+            android:id="@+id/out"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:text="Rezultatas"
+            android:textColor="@android:color/secondary_text_light" />
+
+    </RelativeLayout>
+
+</ScrollView>
