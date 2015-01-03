@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,25 +34,29 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	private TextView in;
-	String list[] = {"RC313227871HK", "RN037964246LT"};
-
+	String list[] = { "RC313227871HK", "RN037964246LT", "RT123456789LT" };
+	List<Item> myItemList = new  ArrayList<Item> ();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		getOverflowMenu();
+		
+
 	}
 
 	private void getOverflowMenu() {
 		try {
 			ViewConfiguration config = ViewConfiguration.get(this);
-			Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+			Field menuKeyField = ViewConfiguration.class
+					.getDeclaredField("sHasPermanentMenuKey");
 			if (menuKeyField != null) {
 				menuKeyField.setAccessible(true);
 				menuKeyField.setBoolean(config, false);
@@ -58,6 +64,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void updateList(){
+		ListView myListView = (ListView) findViewById(R.id.listItems);
+		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, myItemList);
+		myListView.setAdapter(customAdapter);
 	}
 
 	@Override
@@ -70,15 +82,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_about :
-				Intent intent = new Intent(this, ActivityAbout.class);
-				startActivity(intent);
-				return true;
-			case R.id.action_refresh :
-				new Tikrinti().execute(list);
-				return true;
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.action_about:
+			Intent intent = new Intent(this, ActivityAbout.class);
+			startActivity(intent);
+			return true;
+		case R.id.action_refresh:
+			new Tikrinti(this).execute(list);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -89,22 +101,39 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	class Tikrinti extends AsyncTask<String, String, String> {
+	// ---- HTTP LOADER
+	// -------------------------------------------------------------------------------------
+	class Tikrinti extends AsyncTask<String, String, List<Item>> {
 		TextView out;
 		private String result;
+		private List<Item> resultList = new ArrayList <Item>();
+		ProgressDialog progress;
+		MainActivity mainActivity;
+		long startTime, endTime;
+
+		public Tikrinti(MainActivity mainActivity) {
+			this.mainActivity = mainActivity;
+		}
 
 		protected void onPreExecute() {
+			startTime = System.currentTimeMillis();
 			out = (TextView) findViewById(R.id.out);
 			out.setText("Tikrinama...");
+			progress = new ProgressDialog(mainActivity);
+			progress.setTitle("Tikrinama");
+			progress.setMessage("Wait while loading...");
+			progress.show();
+
 		}
 
 		@SuppressWarnings("unchecked")
 		@SuppressLint("UseValueOf")
-		protected String doInBackground(String... numbers) {
+		protected List<Item> doInBackground(String... numbers) {
 			InputStream in = null;
 			int count = numbers.length;
 			String query = numbers[0];
 			String result = "";
+			resultList.clear();
 			for (int i = 1; i < count; i++) {
 				query += "%0D%0A" + numbers[i];
 				Log.v("Query", query);
@@ -112,7 +141,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			try {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpGet request = new HttpGet();
-				URI website = new URI("http://www.post.lt/lt/pagalba/siuntu-paieska/index?num=" + query);
+				URI website = new URI(
+						"http://www.post.lt/lt/pagalba/siuntu-paieska/index?num="
+								+ query);
 				request.setURI(website);
 				HttpResponse response = httpclient.execute(request);
 				in = response.getEntity().getContent();
@@ -120,62 +151,55 @@ public class MainActivity extends Activity implements OnClickListener {
 				// --------- Parse HTML ----------------------------------------
 				String html = convertInputStreamToString(in);
 				Document doc = Jsoup.parse(html);
-
-				// surenka su error
-				// Elements errors = doc.getElementsByClass("notfound");
-				// for (Element number : errors) {
-				// result += number.text() + "\n\n";
-				// }
-				// Log.v("Table", doc.html());
-
+// ------------- FOUND ----------------------------------------------
 				Elements tables = doc.select("table");
 				Log.v("Num", tables.size() + "x");
 				if (tables.size() > 0) {
-					for (Element table : tables) {
+					for (Element table : tables) {						
+						Item x = new Item();
+						x.number = table.getElementsByTag("strong").text();
+						
+						
 						String number = table.getElementsByTag("strong").text();
 						Log.v("Number", number);
-						result += number+"\n";
+						result += number + "\n";
 						for (Element row : table.select("tr")) {
 							Elements tds = row.select("td");
-							if (tds.size() > 2) {								
-								result += tds.last().text() + " : "+tds.get(1).text()+ "\n";
+							if (tds.size() > 2) {
+								result += tds.last().text() + " : "
+										+ tds.get(1).text() + "\n";
+								x.date = tds.last().text();
+								x.place = tds.get(1).text();
 							}
 						}
-						result += "\n\n";
+						result += "\n";
+						resultList.add(x);
 					}
 				}
-
-				// result = String.valueOf(data.isEmpty());
-				// for(Element elem : data){
-				// elem.toString();
-				// result += elem.text() + "\n\n";
-				// }
-
-				// if(data.isEmpty()){ // ERROR
-				// data = doc.getElementsByClass("notfound");
-				// for (Element number:data) {
-				// result += number.text()+"\n\n";
-				// number.hasText();
-				// //number.ha
-				// /* Neteisingas siuntos numerio formatas
-				// * Pagal pateiktà siuntos numerá, duomenø rasti nepavyko.
-				// * Table ...
-				// */
-				// }
-				// }
-
-				// --------- End Parse HTML
-				// ----------------------------------------
+// ------------- NOT FOUND ----------------------------------------------
+				Elements errors = doc.getElementsByClass("notfound");
+				for (Element number : errors) {
+					Item x = new Item();
+					x.place = "Klaida. Nëra informacijos";
+					resultList.add(x);
+					result += number.text() + "\n\n";
+				}
+				doc = null;
+				//doc.empty();
+				
+				// --------- End Parse HTML ----------------------------------------
 				// publishProgress(text); // rodyti kai tikrina
 
 			} catch (Exception e) {
 				Log.e("log_tag", "Error in http connection " + e.toString());
 			}
-			return result;
+			return resultList;
 		}
 
-		private String convertInputStreamToString(InputStream inputStream) throws IOException {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+		private String convertInputStreamToString(InputStream inputStream)
+				throws IOException {
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(inputStream));
 			String line = "";
 			String result = "";
 			while ((line = bufferedReader.readLine()) != null)
@@ -191,9 +215,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		}
 
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(List<Item> resultList) {
+			progress.dismiss();
+			endTime = System.currentTimeMillis();
+			result += (endTime - startTime) / 1000.0 + " s";
 			out.setText(result);
+			mainActivity.myItemList = resultList;
+			updateList();
 		}
 
-	}
-}
+	} // --- END OF AsyncTask ---
+} // --- END OF ACTIVITY ---

@@ -3,7 +3,9 @@
 
     <string name="app_name">Kur mano siuntinys</string>
     <string name="action_about">Apie</string>
-    <string name="action_refresh">Atnaujinti</string>       
+    <string name="action_add">Pridėti</string>
+    <string name="action_refresh">Atnaujinti</string>
+    <string name="action_settings">Nustatymai</string>
     <string name="Status">Status</string>
     <string name="empty"></string>
     <string name="server">Server</string>

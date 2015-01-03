@@ -1,23 +1,23 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scroll"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="#FFD400" >
+    android:background="#A0FFD400"
+    android:orientation="vertical" >
 
-    <RelativeLayout
+    <ListView
+        android:id="@+id/listItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context="${relativePackage}.${activityClass}" >
+        android:divider="@drawable/divider"
+        android:dividerHeight="1dp" >
+    </ListView>
 
-        <TextView
-            android:id="@+id/out"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="17dp"
-            android:text="Rezultatas"
-            android:textColor="@android:color/secondary_text_light" />
+    <TextView
+        android:id="@+id/out"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/secondary_text_light" />
 
-    </RelativeLayout>
-
-</ScrollView>
+</LinearLayout>
