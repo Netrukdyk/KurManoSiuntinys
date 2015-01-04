@@ -6,11 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -102,7 +99,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	// -------------------------------------------------------------------------------------
 	class Tikrinti extends AsyncTask<String, String, List<Item>> {
 		TextView			out;
-		private String		result;
 		private List<Item>	resultList	= new ArrayList<Item>();
 		ProgressDialog		progress;
 		MainActivity		mainActivity;
@@ -117,10 +113,9 @@ public class MainActivity extends Activity implements OnClickListener {
 			out = (TextView) findViewById(R.id.out);
 			out.setText("Tikrinama...");
 			progress = new ProgressDialog(mainActivity);
-			progress.setTitle("Tikrinama");
-			progress.setMessage("Wait while loading...");
+			progress.setTitle("Tikrinama...");
+			progress.setMessage("Palaukite kol informacija atsinaujins");
 			progress.show();
-
 		}
 
 		@SuppressLint("UseValueOf")
@@ -149,54 +144,52 @@ public class MainActivity extends Activity implements OnClickListener {
 				Log.v("JSoup", tables.size() + " tables");
 				if (tables.size() > 0) {
 					for (Element table : tables) {
-						Item x = new Item();
-						x.number = table.getElementsByTag("strong").text();
-						x.alias = "Siuntinys";
+						Item item = new Item();
+						item.setNumber(table.getElementsByTag("strong").text());
+						item.setAlias("Siuntinys");
 						for (Element row : table.select("tr")) {
 							Elements tds = row.select("td");
 							if (tds.size() > 2) {
-								x.explain = tds.first().text(); // explain
-								x.place = tds.get(1).text(); // place
-								x.date = tds.last().text(); // date
+								ItemInfo itemInfo = new ItemInfo();
+								itemInfo.setExplain(tds.first().text());
+								itemInfo.setPlace(tds.get(1).text()); // place
+								itemInfo.setDate(tds.last().text()); // date
+								item.addItemInfo(itemInfo);
 							}
 						}
-						if (!x.getPlace().contains("Paðto skirstymo departamentas") && !x.getExplain().contains("Siunta paðte priimta ið siuntëjo"))
-							x.status = Item.Status.PASTE;
-						else if (x.getPlace().contains("Paðto skirstymo departamentas") && x.getExplain().contains("Siunta iðsiøsta á uþsiená"))
-							x.status = Item.Status.PASTE;
+						if (!item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
+								&& !item.getLastItemInfo().getExplain().contains("Siunta paðte priimta ið siuntëjo"))
+							item.setStatus(Item.Status.PASTE);
+						else if (item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
+								&& item.getLastItemInfo().getExplain().contains("Siunta iðsiøsta á uþsiená"))
+							item.setStatus(Item.Status.PASTE);
 						else
-							x.status = Item.Status.VILNIUS;
-						resultList.add(x);
+							item.setStatus(Item.Status.VILNIUS);
+						resultList.add(item);
 					}
 				}
 				// ------------- NOT FOUND ----------------------
 				Elements errors = doc.getElementsByClass("notfound");
 				Log.v("JSoup", errors.size() + " errors");
 				for (Element number : errors) {
-					Item x = new Item();
-					x.alias = "Siuntinys";
-					x.status = Item.Status.NERA;
-					x.number = number.getElementsByTag("strong").text();
-					x.date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+					Item item = new Item();
+					item.setAlias("Siuntinys");
+					item.setNumber(number.getElementsByTag("strong").text());
+
 					Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
 					if (!details.isEmpty())
-						x.place = details.first().text().split("\\.")[0] + ".";
+						item.setStatus(Item.Status.NERA);
 					else {
 						details = number.getElementsContainingOwnText("Neteisingas siuntos numerio formatas");
-						if (!details.isEmpty()) {
-							String sentences[] = details.first().text().split("\\. ");
-							x.place = sentences[0] + ".";
-							x.explain = sentences[1];
-						}
+						if (!details.isEmpty())
+							item.setStatus(Item.Status.BLOGAS);
 					}
-					// x.explain = details.last().text();
-					resultList.add(x);
+					resultList.add(item);
 				}
 				doc = null;
 				// --------- End Parse HTML
 				// ----------------------------------------
-				// publishProgress(text); // rodyti kai tikrina
-
+				// publishProgress(text); // rodyti progresà kai tikrina
 			} catch (Exception e) {
 				Log.e("log_tag", "Error in http connection " + e.toString());
 			}
@@ -209,22 +202,18 @@ public class MainActivity extends Activity implements OnClickListener {
 			String result = "";
 			while ((line = bufferedReader.readLine()) != null)
 				result += line;
-
 			inputStream.close();
 			return result;
-
 		}
 
 		protected void onProgressUpdate(String... a) {
 			// Log.v("Log", "You are in progress update ... " + a[0]);
-
 		}
 
 		protected void onPostExecute(List<Item> resultList) {
 			progress.dismiss();
 			endTime = System.currentTimeMillis();
-			result = (endTime - startTime) / 1000.0 + " s";
-			out.setText(result);
+			out.setText((endTime - startTime) / 1000.0 + " s");
 			updateList(resultList);
 		}
 

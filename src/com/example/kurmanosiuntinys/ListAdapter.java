@@ -41,9 +41,9 @@ public class ListAdapter extends ArrayAdapter<Item>{
 
 	        if (aliasText != null) aliasText.setText(myItem.getAlias());
 	        if (numberText != null) numberText.setText(myItem.getNumber());
-	        if (dateText != null) dateText.setText(myItem.getDate());
-	        if (placeText != null) placeText.setText(myItem.getPlace());
-	        if (explainText != null) explainText.setText(myItem.getExplain());
+	        if (dateText != null) dateText.setText(myItem.getLastItemInfo().getDate());
+	        if (placeText != null) placeText.setText(myItem.getLastItemInfo().getPlace());
+	        if (explainText != null) explainText.setText(myItem.getLastItemInfo().getExplain());
 	        
 	        Item.Status status = myItem.getStatus();
 	        int icon = 0;
@@ -56,6 +56,9 @@ public class ListAdapter extends ArrayAdapter<Item>{
 				break;
 			case VILNIUS:
 				icon = R.drawable.ic_box_yellow;
+				break;
+			case PASIIMTA:
+				icon = R.drawable.ic_box_green;
 				break;
 	        }
 	        if (logoImg != null) logoImg.setImageResource(icon);
