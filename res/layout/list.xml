@@ -35,7 +35,6 @@
                 android:layout_below="@+id/number"
                 android:layout_marginBottom="2dp"
                 android:layout_toRightOf="@+id/img"
-                android:maxLines="2"
                 android:text="Klaipėdos 15-asis paštas, Taikos pr. 119, Klaipėda"
                 android:textColor="@android:color/secondary_text_light" />
 
@@ -44,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/alias"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="12dp"
                 android:layout_toRightOf="@+id/img"
                 android:text="RC313227871HK"
                 android:textColor="#444444"
@@ -57,7 +56,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/place"
                 android:layout_toRightOf="@+id/img"
-                android:maxLines="2"
                 android:text="Siunta pristatyta ir įteikta gavėjui ar – pagal įgaliojimą – kitam asmeniui."
                 android:textColor="@android:color/primary_text_light" />
 

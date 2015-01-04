@@ -1,11 +1,25 @@
 package com.example.kurmanosiuntinys;
 
 public class ItemInfo {
-	private String	date, place, explain;
+	private String	itemNumber, date, place, explain;
 
 	public ItemInfo() {
 	}
+	public ItemInfo(String itemNumber, String date, String place, String explain) {
+		this.itemNumber = itemNumber;
+		this.date = date;
+		this.place = place;
+		this.explain = explain;
+	}
+	
+	public void setItemNumber(String itemNumber) {
+		this.itemNumber = itemNumber;
+	}
 
+	public String getItemNumber() {
+		return itemNumber;
+	}
+	
 	public void setDate(String date) {
 		this.date = date;
 	}

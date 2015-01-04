@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
+    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:background="#A0FFD400"
@@ -10,14 +10,16 @@
         android:id="@+id/listItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="@drawable/divider"
-        android:dividerHeight="1dp" >
+        android:layout_weight="2"
+        android:divider="@drawable/divider" >
+
     </ListView>
 
     <TextView
         android:id="@+id/out"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.1"
         android:textColor="@android:color/secondary_text_light" />
 
 </LinearLayout>
