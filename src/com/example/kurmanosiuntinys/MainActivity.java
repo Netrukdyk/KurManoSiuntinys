@@ -6,9 +6,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -17,7 +19,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
@@ -33,30 +34,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	private TextView in;
-	String list[] = { "RC313227871HK", "RN037964246LT", "RT123456789LT" };
-	List<Item> myItemList = new  ArrayList<Item> ();
+	String	list[]	= { "RC313227871HK", "RN037964246LT", "RT123456789LT", "R123456LT" };
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		getOverflowMenu();
-		
 
 	}
 
 	private void getOverflowMenu() {
 		try {
 			ViewConfiguration config = ViewConfiguration.get(this);
-			Field menuKeyField = ViewConfiguration.class
-					.getDeclaredField("sHasPermanentMenuKey");
+			Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
 			if (menuKeyField != null) {
 				menuKeyField.setAccessible(true);
 				menuKeyField.setBoolean(config, false);
@@ -65,10 +62,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public void updateList(){
+
+	public void updateList(List<Item> resultList) {
 		ListView myListView = (ListView) findViewById(R.id.listItems);
-		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, myItemList);
+		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, resultList);
 		myListView.setAdapter(customAdapter);
 	}
 
@@ -104,12 +101,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	// ---- HTTP LOADER
 	// -------------------------------------------------------------------------------------
 	class Tikrinti extends AsyncTask<String, String, List<Item>> {
-		TextView out;
-		private String result;
-		private List<Item> resultList = new ArrayList <Item>();
-		ProgressDialog progress;
-		MainActivity mainActivity;
-		long startTime, endTime;
+		TextView			out;
+		private String		result;
+		private List<Item>	resultList	= new ArrayList<Item>();
+		ProgressDialog		progress;
+		MainActivity		mainActivity;
+		long				startTime, endTime;
 
 		public Tikrinti(MainActivity mainActivity) {
 			this.mainActivity = mainActivity;
@@ -126,24 +123,20 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		}
 
-		@SuppressWarnings("unchecked")
 		@SuppressLint("UseValueOf")
 		protected List<Item> doInBackground(String... numbers) {
 			InputStream in = null;
 			int count = numbers.length;
 			String query = numbers[0];
-			String result = "";
 			resultList.clear();
 			for (int i = 1; i < count; i++) {
 				query += "%0D%0A" + numbers[i];
-				Log.v("Query", query);
 			}
+			Log.v("Query", query);
 			try {
 				HttpClient httpclient = new DefaultHttpClient();
 				HttpGet request = new HttpGet();
-				URI website = new URI(
-						"http://www.post.lt/lt/pagalba/siuntu-paieska/index?num="
-								+ query);
+				URI website = new URI("http://www.post.lt/lt/pagalba/siuntu-paieska/index?num=" + query);
 				request.setURI(website);
 				HttpResponse response = httpclient.execute(request);
 				in = response.getEntity().getContent();
@@ -151,43 +144,57 @@ public class MainActivity extends Activity implements OnClickListener {
 				// --------- Parse HTML ----------------------------------------
 				String html = convertInputStreamToString(in);
 				Document doc = Jsoup.parse(html);
-// ------------- FOUND ----------------------------------------------
+				// ------------- FOUND -------------------------
 				Elements tables = doc.select("table");
-				Log.v("Num", tables.size() + "x");
+				Log.v("JSoup", tables.size() + " tables");
 				if (tables.size() > 0) {
-					for (Element table : tables) {						
+					for (Element table : tables) {
 						Item x = new Item();
 						x.number = table.getElementsByTag("strong").text();
-						
-						
-						String number = table.getElementsByTag("strong").text();
-						Log.v("Number", number);
-						result += number + "\n";
+						x.alias = "Siuntinys";
 						for (Element row : table.select("tr")) {
 							Elements tds = row.select("td");
 							if (tds.size() > 2) {
-								result += tds.last().text() + " : "
-										+ tds.get(1).text() + "\n";
-								x.date = tds.last().text();
-								x.place = tds.get(1).text();
+								x.explain = tds.first().text(); // explain
+								x.place = tds.get(1).text(); // place
+								x.date = tds.last().text(); // date
 							}
 						}
-						result += "\n";
+						if (!x.getPlace().contains("Paðto skirstymo departamentas") && !x.getExplain().contains("Siunta paðte priimta ið siuntëjo"))
+							x.status = Item.Status.PASTE;
+						else if (x.getPlace().contains("Paðto skirstymo departamentas") && x.getExplain().contains("Siunta iðsiøsta á uþsiená"))
+							x.status = Item.Status.PASTE;
+						else
+							x.status = Item.Status.VILNIUS;
 						resultList.add(x);
 					}
 				}
-// ------------- NOT FOUND ----------------------------------------------
+				// ------------- NOT FOUND ----------------------
 				Elements errors = doc.getElementsByClass("notfound");
+				Log.v("JSoup", errors.size() + " errors");
 				for (Element number : errors) {
 					Item x = new Item();
-					x.place = "Klaida. Nëra informacijos";
+					x.alias = "Siuntinys";
+					x.status = Item.Status.NERA;
+					x.number = number.getElementsByTag("strong").text();
+					x.date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+					Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
+					if (!details.isEmpty())
+						x.place = details.first().text().split("\\.")[0] + ".";
+					else {
+						details = number.getElementsContainingOwnText("Neteisingas siuntos numerio formatas");
+						if (!details.isEmpty()) {
+							String sentences[] = details.first().text().split("\\. ");
+							x.place = sentences[0] + ".";
+							x.explain = sentences[1];
+						}
+					}
+					// x.explain = details.last().text();
 					resultList.add(x);
-					result += number.text() + "\n\n";
 				}
 				doc = null;
-				//doc.empty();
-				
-				// --------- End Parse HTML ----------------------------------------
+				// --------- End Parse HTML
+				// ----------------------------------------
 				// publishProgress(text); // rodyti kai tikrina
 
 			} catch (Exception e) {
@@ -196,10 +203,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			return resultList;
 		}
 
-		private String convertInputStreamToString(InputStream inputStream)
-				throws IOException {
-			BufferedReader bufferedReader = new BufferedReader(
-					new InputStreamReader(inputStream));
+		private String convertInputStreamToString(InputStream inputStream) throws IOException {
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 			String line = "";
 			String result = "";
 			while ((line = bufferedReader.readLine()) != null)
@@ -218,10 +223,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		protected void onPostExecute(List<Item> resultList) {
 			progress.dismiss();
 			endTime = System.currentTimeMillis();
-			result += (endTime - startTime) / 1000.0 + " s";
+			result = (endTime - startTime) / 1000.0 + " s";
 			out.setText(result);
-			mainActivity.myItemList = resultList;
-			updateList();
+			updateList(resultList);
 		}
 
 	} // --- END OF AsyncTask ---

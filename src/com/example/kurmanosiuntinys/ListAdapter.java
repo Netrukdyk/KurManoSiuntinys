@@ -1,12 +1,13 @@
 package com.example.kurmanosiuntinys;
 
 import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ListAdapter extends ArrayAdapter<Item>{
@@ -19,6 +20,7 @@ public class ListAdapter extends ArrayAdapter<Item>{
 	    super(context, resource, items);
 	}
 
+	@SuppressLint("InflateParams")
 	@Override
 	public View getView(int position, View v, ViewGroup parent) {
 	    if (v == null) {
@@ -35,12 +37,28 @@ public class ListAdapter extends ArrayAdapter<Item>{
 	        TextView dateText = (TextView) v.findViewById(R.id.date);
 	        TextView placeText = (TextView) v.findViewById(R.id.place);
 	        TextView explainText = (TextView) v.findViewById(R.id.explain);
+	        ImageView logoImg = (ImageView) v.findViewById(R.id.img);
 
 	        if (aliasText != null) aliasText.setText(myItem.getAlias());
 	        if (numberText != null) numberText.setText(myItem.getNumber());
 	        if (dateText != null) dateText.setText(myItem.getDate());
 	        if (placeText != null) placeText.setText(myItem.getPlace());
 	        if (explainText != null) explainText.setText(myItem.getExplain());
+	        
+	        Item.Status status = myItem.getStatus();
+	        int icon = 0;
+	        switch(status){
+	        case NERA:
+	        	icon = R.drawable.ic_box_red;
+	        	break;
+			case PASTE:
+				icon = R.drawable.ic_box_green;
+				break;
+			case VILNIUS:
+				icon = R.drawable.ic_box_yellow;
+				break;
+	        }
+	        if (logoImg != null) logoImg.setImageResource(icon);
 	        
 	    }
 	    return v;

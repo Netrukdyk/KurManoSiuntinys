@@ -1,23 +1,14 @@
 package com.example.kurmanosiuntinys;
 
 public class Item {
-	public String alias;
-	public String number;
-	public String date;
-	public String place;
-	public String explain;
-	
-	public Item(){
-		
+	public String	alias, number, date, place, explain;
+	public Status	status;
+
+	enum Status {
+		NERA, VILNIUS, PASTE// 0, 1, 2
 	}
-	
-	public Item(String alias, String number, String date, String place,
-			String explain) {
-		this.alias = alias;
-		this.number = number;
-		this.date = date;
-		this.place = place;
-		this.explain = explain;
+
+	public Item() {
 	}
 
 	public String getAlias() {
@@ -39,6 +30,9 @@ public class Item {
 	public String getExplain() {
 		return explain;
 	}
-	
-	
+
+	public Status getStatus() {
+		return status;
+	}
+
 }
