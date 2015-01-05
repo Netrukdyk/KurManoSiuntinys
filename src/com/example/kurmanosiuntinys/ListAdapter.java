@@ -45,7 +45,7 @@ public class ListAdapter extends ArrayAdapter<Item> {
 			if (numberText != null)
 				numberText.setText(myItem.getNumber());
 			if (dateText != null)
-				dateText.setText((myItemInfo != null) ? myItemInfo.getDate() : myItem.getDate());
+				dateText.setText((myItemInfo != null) ? myItemInfo.getDate() : C.getDate());
 			if (placeText != null)
 				placeText.setText((myItemInfo != null) ? myItemInfo.getPlace() : "");
 			if (explainText != null)

@@ -9,4 +9,7 @@
     <string name="Status">Status</string>
     <string name="empty"></string>
     <string name="server">Server</string>
+    <string name="title_activity_activity_item">Siuntinys</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

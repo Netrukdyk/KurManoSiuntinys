@@ -34,15 +34,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.WindowManager.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class ActivityMain extends Activity implements OnClickListener {
 
-	String			list[]	= { "RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT" };
-	DatabaseHandler	db;
+	String list[] = {"RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT"};
+	DatabaseHandler db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,17 @@ public class MainActivity extends Activity implements OnClickListener {
 		ListView myListView = (ListView) findViewById(R.id.listItems);
 		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, resultList);
 		myListView.setAdapter(customAdapter);
+		myListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				TextView number = (TextView) view.findViewById(R.id.number);
+				// String item = number.getText().toString();
+				// Toast.makeText(getBaseContext(), item, Toast.LENGTH_LONG).show();
+				Intent i = new Intent(getApplicationContext(), ActivityItem.class);
+				i.putExtra("item", number.getText().toString());
+				startActivity(i);
+			}
+		});
 	}
 
 	@Override
@@ -88,24 +101,24 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_about:
-			Intent intent = new Intent(this, ActivityAbout.class);
-			startActivity(intent);
-			return true;
-		case R.id.action_settings:
-			// Intent intent = new Intent(this, ActivitySetting.class);
-			// startActivity(intent);
-			//db.removeAll();
-			updateList();
-			return true;
-		case R.id.action_add:
-			showInputDialog();
-			return true;
-		case R.id.action_refresh:			
-			new Tikrinti(this).execute(db.getAllItems());
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case R.id.action_about :
+				Intent intent = new Intent(this, ActivityAbout.class);
+				startActivity(intent);
+				return true;
+			case R.id.action_settings :
+				// Intent intent = new Intent(this, ActivitySetting.class);
+				// startActivity(intent);
+				// db.removeAll();
+				updateList();
+				return true;
+			case R.id.action_add :
+				showInputDialog();
+				return true;
+			case R.id.action_refresh :
+				new Tikrinti(this).execute(db.getAllItems());
+				return true;
+			default :
+				return super.onOptionsItemSelected(item);
 		}
 	}
 
@@ -115,7 +128,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		builder.setTitle("Pridëti naujà numerá");
 
 		View dialogView = getLayoutInflater().inflate(R.layout.new_dialog, null);
-		
+
 		final EditText number = (EditText) dialogView.findViewById(R.id.dialogNumber);
 		number.requestFocus();
 		final EditText alias = (EditText) dialogView.findViewById(R.id.dialogAlias);
@@ -124,15 +137,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				String myAlias = (alias.getText().toString() == "") ? "Siuntinys" : alias.getText().toString() ;
+				String myAlias = (alias.getText().toString() == "") ? "Siuntinys" : alias.getText().toString();
 				String myNumber = number.getText().toString();
-				
-				if (myNumber.length() >= 12){
-					db.addItem(new Item(myAlias, myNumber,1,C.getDate()));
+
+				if (myNumber.length() >= 12) {
+					db.addItem(new Item(myAlias, myNumber, 1, C.getDate()));
 					updateList();
 					dialog.dismiss();
-				} else 
-					Toast.makeText(MainActivity.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();				
+				} else
+					Toast.makeText(ActivityMain.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
 			}
 		});
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -141,13 +154,14 @@ public class MainActivity extends Activity implements OnClickListener {
 				dialog.cancel();
 			}
 		});
-		//builder.show();
+		// builder.show();
 		AlertDialog dialog = builder.create();
 		dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		dialog.show();
-		
-//		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//		imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY , 0);
+
+		// InputMethodManager imm = (InputMethodManager)
+		// getSystemService(Context.INPUT_METHOD_SERVICE);
+		// imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY , 0);
 	}
 
 	@Override
@@ -159,13 +173,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	// --- HTTP LOADER -----------------------------------------------
 	class Tikrinti extends AsyncTask<List<Item>, String, List<Item>> {
-		TextView			out;
-		private List<Item>	resultList	= new ArrayList<Item>();
-		ProgressDialog		progress;
-		MainActivity		mainActivity;
-		long				startTime, endTime;
+		TextView out;
+		private List<Item> resultList = new ArrayList<Item>();
+		ProgressDialog progress;
+		ActivityMain mainActivity;
+		long startTime, endTime;
 
-		public Tikrinti(MainActivity mainActivity) {
+		public Tikrinti(ActivityMain mainActivity) {
 			this.mainActivity = mainActivity;
 		}
 
@@ -182,14 +196,14 @@ public class MainActivity extends Activity implements OnClickListener {
 		@SuppressLint("UseValueOf")
 		protected List<Item> doInBackground(List<Item>... numberLists) {
 			List<Item> numbers = numberLists[0];
-			if(numbers.size() == 0) {
-				progress.dismiss();				
+			if (numbers.size() == 0) {
+				progress.dismiss();
 				cancel(false);
 			}
-			InputStream in = null;			
+			InputStream in = null;
 			resultList.clear();
 			String query = "";
-			for (Item number : numbers) {				
+			for (Item number : numbers) {
 				query += "%0D%0A" + number.getNumber();
 			}
 			query = query.substring(6); // nukerpa pirmà new line
@@ -280,7 +294,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			progress.dismiss();
 			endTime = System.currentTimeMillis();
 			out.setText((endTime - startTime) / 1000.0 + " s");
-			
+
 			db.updateItems(resultList);
 			updateList();
 		}
