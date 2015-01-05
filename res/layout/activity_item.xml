@@ -1,0 +1,16 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:background="#A0FFD400"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/itemOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:textColor="@android:color/secondary_text_light" />
+
+</LinearLayout>
