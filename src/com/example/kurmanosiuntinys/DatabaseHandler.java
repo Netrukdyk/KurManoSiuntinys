@@ -73,11 +73,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		return item;
 	}
 
-	// Getting All Contacts
-	public List<Item> getAllItems() {
+	// Getting All Items
+	public List<Item> getAllItems(Boolean excludeTaken) {
 		List<Item> itemList = new ArrayList<Item>();
+		String condition = (excludeTaken) ? " WHERE "+KEY_STATUS+"!=4" : "";
 		// Select All Query
-		String selectQuery = "SELECT * FROM " + TABLE_ITEMS;
+		String selectQuery = "SELECT * FROM " + TABLE_ITEMS + condition;
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 

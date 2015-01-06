@@ -1,16 +1,117 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemLayout"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemlayout"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="#A0FFD400"
-    android:orientation="vertical" >
+    android:background="#A0FFD400" >
 
-    <TextView
-        android:id="@+id/itemOut"
+    <RelativeLayout
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:textColor="@android:color/secondary_text_light" />
+        android:background="#80ffffff"
+        android:padding="10dp" >
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/itemImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:contentDescription="@string/empty"
+            android:src="@drawable/ic_box_yellow" />
+
+        <TextView
+            android:id="@+id/itemAlias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/itemImg"
+            android:layout_toRightOf="@+id/itemImg"
+            android:maxLines="1"
+            android:text="Siuntinio pavadinimas"
+            android:textColor="@android:color/primary_text_light"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/itemNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/itemAlias"
+            android:layout_marginBottom="12dp"
+            android:layout_toEndOf="@+id/itemImg"
+            android:layout_toRightOf="@+id/itemImg"
+            android:text="RC123456789HK"
+            android:textColor="#444444"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/itemInfoTableLayout"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/item"
+        android:layout_marginTop="2dp"
+        android:background="#50ffffff"
+        android:paddingTop="10dp"
+        android:stretchColumns="*" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/labelExplain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Įvykis"
+                android:textColor="@android:color/primary_text_light"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/labelPlace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Vieta"
+                android:textColor="@android:color/primary_text_light"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/labelDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Data"
+                android:textColor="@android:color/primary_text_light"
+                android:textStyle="bold" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>

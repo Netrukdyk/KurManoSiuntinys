@@ -70,7 +70,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 	}
 
 	public void updateList() {
-		updateList(db.getAllItems());
+		updateList(db.getAllItems(false));
 	}
 
 	public void updateList(List<Item> resultList) {
@@ -93,7 +93,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
+		inflater.inflate(R.menu.menu_main, menu);
 		return true;
 	}
 
@@ -115,7 +115,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 				showInputDialog();
 				return true;
 			case R.id.action_refresh :
-				new Tikrinti(this).execute(db.getAllItems());
+				new Tikrinti(this).execute(db.getAllItems(true));
 				return true;
 			default :
 				return super.onOptionsItemSelected(item);

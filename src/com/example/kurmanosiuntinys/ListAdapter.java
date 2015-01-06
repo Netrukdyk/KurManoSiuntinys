@@ -65,7 +65,6 @@ public class ListAdapter extends ArrayAdapter<Item> {
 			case PASIIMTA:
 				icon = R.drawable.ic_box_green;
 				break;
-
 			default:
 				break;
 			}
