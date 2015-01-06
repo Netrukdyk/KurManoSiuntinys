@@ -1,20 +1,28 @@
 package com.example.kurmanosiuntinys;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 public class ActivityItem extends Activity {
-	TextView		itemAlias, itemNumber;
-	ImageView		logoImg;
-	DatabaseHandler	db;
+	TextView itemAlias, itemNumber;
+	ImageView logoImg;
+	DatabaseHandler db;
 
+	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,40 +44,37 @@ public class ActivityItem extends Activity {
 
 				int icon = 0;
 				switch (status) {
-				case BLOGAS:
-				case NERA:
-					icon = R.drawable.ic_box_red;
-					break;
-				case VILNIUS:
-					icon = R.drawable.ic_box_yellow;
-					break;
-				case PASTE:
-				case PASIIMTA:
-					icon = R.drawable.ic_box_green;
-					break;
-				default:
-					break;
+					case BLOGAS :
+					case NERA :
+						icon = R.drawable.ic_box_red;
+						break;
+					case VILNIUS :
+						icon = R.drawable.ic_box_yellow;
+						break;
+					case PASTE :
+					case PASIIMTA :
+						icon = R.drawable.ic_box_green;
+						break;
+					default :
+						break;
 				}
 				if (logoImg != null)
 					logoImg.setImageResource(icon);
 
-				TableLayout tl = (TableLayout) findViewById(R.id.itemInfoTableLayout);
+				LinearLayout layout = (LinearLayout) findViewById(R.id.itemlayout);
+				View v = getLayoutInflater().inflate(R.layout.item, null);
+				TextView date = (TextView) v.findViewById(R.id.date);
+				TextView place = (TextView) v.findViewById(R.id.place);
+				TextView explain = (TextView) v.findViewById(R.id.explain);
+				
 				for (ItemInfo itemInfo : item.getItemInfo()) {
-					TableRow tr = new TableRow(this);
-					tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-					TextView explain = new TextView(this);
-					TextView place = new TextView(this);
-					TextView date = new TextView(this);
 					explain.setText(itemInfo.getExplain());
 					place.setText(itemInfo.getPlace());
-					date.setText(itemInfo.getDate());					
-					explain.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-					place.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-					date.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-					tr.addView(explain);
-					tr.addView(place);
-					tr.addView(date);
-					tl.addView(tr, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+					date.setText(itemInfo.getDate());
+					
+					View vv = getLayoutInflater().inflate(R.layout.item, null);
+					
+					layout.addView(vv, new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
 				}
 			}
 		}
@@ -85,16 +90,16 @@ public class ActivityItem extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_about:
-			Intent intent = new Intent(this, ActivityAbout.class);
-			startActivity(intent);
-			return true;
-		case R.id.action_edit:
-			return true;
-		case R.id.action_delete:
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case R.id.action_about :
+				Intent intent = new Intent(this, ActivityAbout.class);
+				startActivity(intent);
+				return true;
+			case R.id.action_edit :
+				return true;
+			case R.id.action_delete :
+				return true;
+			default :
+				return super.onOptionsItemSelected(item);
 		}
 	}
 }

@@ -69,7 +69,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		if (cursor != null)
 			cursor.moveToFirst();
 		Item item = new Item(cursor.getString(0), cursor.getString(1), Integer.parseInt(cursor.getString(2)), cursor.getString(3));
-		item.setItemInfo(getItemInfo(cursor.getString(2)));
+		item.setItemInfo(getItemInfo(number));
 		return item;
 	}
 

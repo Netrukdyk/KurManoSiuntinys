@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemInfo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#40ffffff"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:text="2015-01-01"
+        android:textColor="@android:color/primary_text_light" />
+
+    <TextView
+        android:id="@+id/place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/date"
+        android:text="Pašto pavadinimas, adresas"
+        android:textColor="@android:color/secondary_text_light" />
+
+    <TextView
+        android:id="@+id/explain"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/place"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/place"
+        android:text="Siuntinio statuso paaiškinimas."
+        android:textColor="@android:color/primary_text_light" />
+
+</LinearLayout>
