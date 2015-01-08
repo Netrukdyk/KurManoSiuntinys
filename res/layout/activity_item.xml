@@ -3,7 +3,7 @@
     android:id="@+id/itemlayout"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:background="#A0FFD400"
+    android:background="#ffFFD400"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -52,9 +52,21 @@
             android:textSize="12sp" />
     </RelativeLayout>
 
-    <include
+    <ScrollView
+        android:id="@+id/ScrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/item" />
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/itemInfoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:divider="@drawable/divider"
+            android:showDividers="middle" >
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

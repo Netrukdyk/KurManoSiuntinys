@@ -2,24 +2,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:background="#A0FFD400"
-    android:orientation="vertical" >
+    android:layout_height="match_parent"
+    android:background="#ffFFD400"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context="${relativePackage}.${activityClass}" >
 
-    <ListView
-        android:id="@+id/listItems"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:divider="@drawable/divider" >
-
-    </ListView>
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/box" />
 
     <TextView
-        android:id="@+id/out"
-        android:layout_width="match_parent"
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.1"
-        android:textColor="@android:color/secondary_text_light" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="25dp"
+        android:text="Lietuvos pašto siuntų sekimas"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/primary_text_light" />
 
+    <Button
+        android:id="@+id/btnTracking"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:drawableLeft="@drawable/ic_launcher"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_launcher"
+        android:gravity="center_vertical|start|left"
+        android:text="Siuntų sekimas" />
+
+    <Button
+        android:id="@+id/btnCalc"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:drawableLeft="@drawable/ic_calc"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_calc"
+        android:gravity="center_vertical|start|left"
+        android:text="Kainų skaičiuoklė" />
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:drawableLeft="@drawable/ic_envelope"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_envelope"
+        android:gravity="center_vertical|start|left"
+        android:text="Pašto kodų paieška" />
+    
+    <Button
+        android:id="@+id/btnPosts"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:drawableLeft="@drawable/ic_map"
+        android:drawablePadding="10dp"
+        android:drawableStart="@drawable/ic_map"
+        android:gravity="center_vertical|start|left"
+        android:text="Paštai ir pašto dėžutės" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal|bottom"
+        android:text="© UAB Inotecha"
+        android:textColor="@android:color/primary_text_light" />
+    
 </LinearLayout>

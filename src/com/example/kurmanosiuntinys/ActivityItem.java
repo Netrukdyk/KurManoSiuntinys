@@ -3,18 +3,12 @@ package com.example.kurmanosiuntinys;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 public class ActivityItem extends Activity {
@@ -61,20 +55,17 @@ public class ActivityItem extends Activity {
 				if (logoImg != null)
 					logoImg.setImageResource(icon);
 
-				LinearLayout layout = (LinearLayout) findViewById(R.id.itemlayout);
-				View v = getLayoutInflater().inflate(R.layout.item, null);
-				TextView date = (TextView) v.findViewById(R.id.date);
-				TextView place = (TextView) v.findViewById(R.id.place);
-				TextView explain = (TextView) v.findViewById(R.id.explain);
+				LinearLayout layout = (LinearLayout) findViewById(R.id.itemInfoLayout);
 				
 				for (ItemInfo itemInfo : item.getItemInfo()) {
+					View v = getLayoutInflater().inflate(R.layout.item_info, null);
+					TextView date = (TextView) v.findViewById(R.id.date);
+					TextView place = (TextView) v.findViewById(R.id.place);
+					TextView explain = (TextView) v.findViewById(R.id.explain);					
 					explain.setText(itemInfo.getExplain());
 					place.setText(itemInfo.getPlace());
-					date.setText(itemInfo.getDate());
-					
-					View vv = getLayoutInflater().inflate(R.layout.item, null);
-					
-					layout.addView(vv, new LinearLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
+					date.setText(itemInfo.getDate());			
+					layout.addView(v, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 				}
 			}
 		}

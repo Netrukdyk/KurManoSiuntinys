@@ -41,7 +41,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ActivityMain extends Activity implements OnClickListener {
+public class ActivityTrack extends Activity implements OnClickListener {
 
 	String list[] = {"RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT"};
 	DatabaseHandler db;
@@ -49,7 +49,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_track);
 		getActionBar().setBackgroundDrawable(null);
 		getOverflowMenu();
 		db = new DatabaseHandler(this);
@@ -145,7 +145,7 @@ public class ActivityMain extends Activity implements OnClickListener {
 					updateList();
 					dialog.dismiss();
 				} else
-					Toast.makeText(ActivityMain.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
+					Toast.makeText(ActivityTrack.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
 			}
 		});
 		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -176,10 +176,10 @@ public class ActivityMain extends Activity implements OnClickListener {
 		TextView out;
 		private List<Item> resultList = new ArrayList<Item>();
 		ProgressDialog progress;
-		ActivityMain mainActivity;
+		ActivityTrack mainActivity;
 		long startTime, endTime;
 
-		public Tikrinti(ActivityMain mainActivity) {
+		public Tikrinti(ActivityTrack mainActivity) {
 			this.mainActivity = mainActivity;
 		}
 
