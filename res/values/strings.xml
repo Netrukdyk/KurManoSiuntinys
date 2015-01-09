@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Siuntų sekimas</string>
-    <string name="action_about">Apie</string>
+    <string name="title_activity_track">Siuntų sekimas</string>
+    <string name="title_activity_about">Apie</string>
     <string name="action_add">Pridėti</string>
     <string name="action_edit">Redaguoti</string>
     <string name="action_delete">Ištrinti</string>

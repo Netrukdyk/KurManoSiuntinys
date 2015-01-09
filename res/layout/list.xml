@@ -3,7 +3,7 @@
             android:id="@+id/item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#80ffffff"
+            android:background="#80b2b2b2"
             android:padding="10dp" >
 
             <ImageView
