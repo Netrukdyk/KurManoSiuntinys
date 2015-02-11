@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -20,8 +21,11 @@ import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -54,6 +58,9 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		getOverflowMenu();
 		db = new DatabaseHandler(this);
 		//updateList();
+		
+		Intent alarmIntent = new Intent(ActivityTrack.this, Alarm.class);
+        pendingIntent = PendingIntent.getBroadcast(ActivityTrack.this, 0, alarmIntent, 0);
 	}
 	
 	@Override
@@ -103,7 +110,6 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -115,13 +121,16 @@ public class ActivityTrack extends Activity implements OnClickListener {
 				// Intent intent = new Intent(this, ActivitySetting.class);
 				// startActivity(intent);
 				// db.removeAll();
-				updateList();
+				//updateList();
+				start();
+				
 				return true;
 			case R.id.action_add :
 				showInputDialog();
 				return true;
 			case R.id.action_refresh :
-				new Tikrinti(this).execute(db.getAllItems(true));
+				cancel();
+				//new Tikrinti(this).execute(db.getAllItems(true));
 				return true;
 			default :
 				return super.onOptionsItemSelected(item);
@@ -169,7 +178,39 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		// getSystemService(Context.INPUT_METHOD_SERVICE);
 		// imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY , 0);
 	}
+	
+	private PendingIntent pendingIntent;
+	
+	public void start() {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval = 8000;
 
+        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
+        Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
+    }
+
+    public void cancel() {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        manager.cancel(pendingIntent);
+        Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
+    }
+
+    public void startAt10() {
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval = 1000 * 60 * 20;
+
+        /* Set the alarm to start at 10:30 AM */
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.MINUTE, 30);
+
+        /* Repeating on every 20 minutes interval */
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000 * 60 * 20, pendingIntent);
+    }
+
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {

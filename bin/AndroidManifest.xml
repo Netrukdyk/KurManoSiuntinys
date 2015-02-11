@@ -5,7 +5,7 @@
     android:versionName="0.5" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="16"
         android:targetSdkVersion="21" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -37,6 +37,19 @@
             android:name=".ActivityItem"
             android:label="@string/title_activity_item" >
         </activity>
+        
+		<receiver
+	        android:name=".Alarm"
+	        android:exported="true" >
+	        <intent-filter>
+	            <action android:name="android.intent.action.NOTIFY" />
+	        </intent-filter>
+	    </receiver>
+        
+        <service
+            android:name=".DownloadService"
+            android:exported="false" />
+            
     </application>
 
 </manifest>
