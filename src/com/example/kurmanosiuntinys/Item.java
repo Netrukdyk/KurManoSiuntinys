@@ -9,7 +9,7 @@ public class Item {
 	private List<ItemInfo>	itemInfo	= new ArrayList<ItemInfo>();
 
 	enum Status {
-		BLOGAS, NERA, VILNIUS, PASTE, PASIIMTA
+		WRONGNUMBER, NOTFOUND, TRANSIT, PICKUP, DELIVERED
 	}
 
 	public Item() {

@@ -53,7 +53,13 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		getActionBar().setBackgroundDrawable(null);
 		getOverflowMenu();
 		db = new DatabaseHandler(this);
-		updateList();
+		//updateList();
+	}
+	
+	@Override
+	public void onResume() {
+	    super.onResume();
+	    updateList();
 	}
 
 	private void getOverflowMenu() {
@@ -226,7 +232,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 					for (Element table : tables) {
 						Item item = new Item();
 						item.setNumber(table.getElementsByTag("strong").text());
-						item.setAlias("Siuntinys");
+						item.setAlias(db.getItem(item.getNumber()).getAlias());
 						for (Element row : table.select("tr")) {
 							Elements tds = row.select("td");
 							if (tds.size() > 2) {
@@ -240,12 +246,12 @@ public class ActivityTrack extends Activity implements OnClickListener {
 						}
 						if (!item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
 								&& !item.getLastItemInfo().getExplain().contains("Siunta paðte priimta ið siuntëjo"))
-							item.setStatus(Item.Status.PASTE);
+							item.setStatus(Item.Status.PICKUP);
 						else if (item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
 								&& item.getLastItemInfo().getExplain().contains("Siunta iðsiøsta á uþsiená"))
-							item.setStatus(Item.Status.PASTE);
+							item.setStatus(Item.Status.PICKUP);
 						else
-							item.setStatus(Item.Status.VILNIUS);
+							item.setStatus(Item.Status.TRANSIT);
 						resultList.add(item);
 					}
 				}
@@ -259,11 +265,11 @@ public class ActivityTrack extends Activity implements OnClickListener {
 
 					Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
 					if (!details.isEmpty())
-						item.setStatus(Item.Status.NERA);
+						item.setStatus(Item.Status.NOTFOUND);
 					else {
 						details = number.getElementsContainingOwnText("Neteisingas siuntos numerio formatas");
 						if (!details.isEmpty())
-							item.setStatus(Item.Status.BLOGAS);
+							item.setStatus(Item.Status.WRONGNUMBER);
 					}
 					resultList.add(item);
 				}

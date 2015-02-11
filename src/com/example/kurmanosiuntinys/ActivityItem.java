@@ -15,7 +15,8 @@ public class ActivityItem extends Activity {
 	TextView itemAlias, itemNumber;
 	ImageView logoImg;
 	DatabaseHandler db;
-
+	Item item;
+	
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,27 +27,27 @@ public class ActivityItem extends Activity {
 		itemNumber = (TextView) findViewById(R.id.itemNumber);
 		logoImg = (ImageView) findViewById(R.id.itemImg);
 		db = new DatabaseHandler(this);
-
+		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			String number = extras.getString("item");
 			if (number != null && number != "") {
-				Item item = db.getItem(number);
+				item = db.getItem(number);
 				itemAlias.setText(item.getAlias());
 				itemNumber.setText(item.getNumber());
 				Item.Status status = item.getStatus();
 
 				int icon = 0;
 				switch (status) {
-					case BLOGAS :
-					case NERA :
+					case WRONGNUMBER :
+					case NOTFOUND :
 						icon = R.drawable.ic_box_red;
 						break;
-					case VILNIUS :
+					case TRANSIT :
 						icon = R.drawable.ic_box_yellow;
 						break;
-					case PASTE :
-					case PASIIMTA :
+					case PICKUP :
+					case DELIVERED :
 						icon = R.drawable.ic_box_green;
 						break;
 					default :
@@ -79,18 +80,20 @@ public class ActivityItem extends Activity {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		switch (menuItem.getItemId()) {
 			case R.id.action_about :
 				Intent intent = new Intent(this, ActivityAbout.class);
 				startActivity(intent);
 				return true;
 			case R.id.action_edit :
 				return true;
-			case R.id.action_delete :
+			case R.id.action_delete:
+				db.deleteItem(item);
+				finish();
 				return true;
 			default :
-				return super.onOptionsItemSelected(item);
+				return super.onOptionsItemSelected(menuItem);
 		}
 	}
 }

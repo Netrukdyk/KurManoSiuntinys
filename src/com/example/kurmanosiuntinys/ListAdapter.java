@@ -54,15 +54,15 @@ public class ListAdapter extends ArrayAdapter<Item> {
 			Item.Status status = myItem.getStatus();
 			int icon = 0;
 			switch (status) {
-			case BLOGAS:
-			case NERA:
+			case WRONGNUMBER:
+			case NOTFOUND:
 				icon = R.drawable.ic_box_red;
 				break;
-			case VILNIUS:
+			case TRANSIT:
 				icon = R.drawable.ic_box_yellow;
 				break;
-			case PASTE:
-			case PASIIMTA:
+			case PICKUP:
+			case DELIVERED:
 				icon = R.drawable.ic_box_green;
 				break;
 			default:
