@@ -45,9 +45,15 @@
 	            <action android:name="android.intent.action.NOTIFY" />
 	        </intent-filter>
 	    </receiver>
-        
+		<receiver
+	        android:name=".ResponseReceiver"
+	        android:exported="true" >
+	        <intent-filter>
+	            <action android:name="ACTION_UPDATED" />
+	        </intent-filter>
+	    </receiver>        
         <service
-            android:name=".DownloadService"
+            android:name=".Updater"
             android:exported="false" />
             
     </application>

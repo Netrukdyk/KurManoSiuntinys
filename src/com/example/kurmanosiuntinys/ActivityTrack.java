@@ -1,34 +1,19 @@
 package com.example.kurmanosiuntinys;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -62,12 +47,20 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		Intent alarmIntent = new Intent(ActivityTrack.this, Alarm.class);
         pendingIntent = PendingIntent.getBroadcast(ActivityTrack.this, 0, alarmIntent, 0);
 	}
-	
-	@Override
-	public void onResume() {
-	    super.onResume();
-	    updateList();
-	}
+    @Override
+    protected void onResume() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Updater.ACTION_UPDATED);
+        registerReceiver(receiver, filter);
+        updateList();
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(receiver);
+        super.onPause();
+    }	
 
 	private void getOverflowMenu() {
 		try {
@@ -81,6 +74,14 @@ public class ActivityTrack extends Activity implements OnClickListener {
 			e.printStackTrace();
 		}
 	}
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+			String text = intent.getStringExtra("msg");
+			Log.v("Track","Updated completed");
+            Toast.makeText(getApplicationContext(), "text", Toast.LENGTH_SHORT);
+        }
+    };
 
 	public void updateList() {
 		updateList(db.getAllItems(false));
@@ -127,10 +128,11 @@ public class ActivityTrack extends Activity implements OnClickListener {
 				return true;
 			case R.id.action_add :
 				showInputDialog();
-				return true;
-			case R.id.action_refresh :
 				cancel();
-				//new Tikrinti(this).execute(db.getAllItems(true));
+				return true;
+			case R.id.action_refresh :				
+				Intent msgIntent = new Intent(this, Updater.class);
+				startService(msgIntent);				
 				return true;
 			default :
 				return super.onOptionsItemSelected(item);
@@ -183,7 +185,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 	
 	public void start() {
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        int interval = 8000;
+        int interval = 60000;
 
         manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
         Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
@@ -207,7 +209,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 
         /* Repeating on every 20 minutes interval */
         manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                1000 * 60 * 20, pendingIntent);
+        		interval, pendingIntent);
     }
 
 	
@@ -218,133 +220,5 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		}
 	}
 
-	// --- HTTP LOADER -----------------------------------------------
-	class Tikrinti extends AsyncTask<List<Item>, String, List<Item>> {
-		TextView out;
-		private List<Item> resultList = new ArrayList<Item>();
-		ProgressDialog progress;
-		ActivityTrack mainActivity;
-		long startTime, endTime;
 
-		public Tikrinti(ActivityTrack mainActivity) {
-			this.mainActivity = mainActivity;
-		}
-
-		protected void onPreExecute() {
-			startTime = System.currentTimeMillis();
-			out = (TextView) findViewById(R.id.out);
-			out.setText("Tikrinama...");
-			progress = new ProgressDialog(mainActivity);
-			progress.setTitle("Tikrinama...");
-			progress.setMessage("Palaukite kol informacija atsinaujins");
-			progress.show();
-		}
-
-		@SuppressLint("UseValueOf")
-		protected List<Item> doInBackground(List<Item>... numberLists) {
-			List<Item> numbers = numberLists[0];
-			if (numbers.size() == 0) {
-				progress.dismiss();
-				cancel(false);
-			}
-			InputStream in = null;
-			resultList.clear();
-			String query = "";
-			for (Item number : numbers) {
-				query += "%0D%0A" + number.getNumber();
-			}
-			query = query.substring(6); // nukerpa pirmà new line
-			Log.v("Query", query);
-			try {
-				HttpClient httpclient = new DefaultHttpClient();
-				HttpGet request = new HttpGet();
-				URI website = new URI("http://www.post.lt/lt/pagalba/siuntu-paieska/index?num=" + query);
-				request.setURI(website);
-				HttpResponse response = httpclient.execute(request);
-				in = response.getEntity().getContent();
-
-				// --------- Parse HTML ----------------------------------------
-				String html = convertInputStreamToString(in);
-				Document doc = Jsoup.parse(html);
-				// ------------- FOUND -------------------------
-				Elements tables = doc.select("table");
-				Log.v("JSoup", tables.size() + " tables");
-				if (tables.size() > 0) {
-					for (Element table : tables) {
-						Item item = new Item();
-						item.setNumber(table.getElementsByTag("strong").text());
-						item.setAlias(db.getItem(item.getNumber()).getAlias());
-						for (Element row : table.select("tr")) {
-							Elements tds = row.select("td");
-							if (tds.size() > 2) {
-								ItemInfo itemInfo = new ItemInfo();
-								itemInfo.setItemNumber(item.getNumber());
-								itemInfo.setExplain(tds.first().text());
-								itemInfo.setPlace(tds.get(1).text()); // place
-								itemInfo.setDate(tds.last().text()); // date
-								item.addItemInfo(itemInfo);
-							}
-						}
-						if (!item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
-								&& !item.getLastItemInfo().getExplain().contains("Siunta paðte priimta ið siuntëjo"))
-							item.setStatus(Item.Status.PICKUP);
-						else if (item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
-								&& item.getLastItemInfo().getExplain().contains("Siunta iðsiøsta á uþsiená"))
-							item.setStatus(Item.Status.PICKUP);
-						else
-							item.setStatus(Item.Status.TRANSIT);
-						resultList.add(item);
-					}
-				}
-				// ------------- NOT FOUND ----------------------
-				Elements errors = doc.getElementsByClass("notfound");
-				Log.v("JSoup", errors.size() + " errors");
-				for (Element number : errors) {
-					Item item = new Item();
-					item.setAlias("Siuntinys");
-					item.setNumber(number.getElementsByTag("strong").text());
-
-					Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
-					if (!details.isEmpty())
-						item.setStatus(Item.Status.NOTFOUND);
-					else {
-						details = number.getElementsContainingOwnText("Neteisingas siuntos numerio formatas");
-						if (!details.isEmpty())
-							item.setStatus(Item.Status.WRONGNUMBER);
-					}
-					resultList.add(item);
-				}
-				doc = null;
-				// --------- End Parse HTML -----------------------------------
-				// publishProgress(text); // rodyti progresà kai tikrina
-			} catch (Exception e) {
-				Log.e("log_tag", "Error in http connection " + e.toString());
-			}
-			return resultList;
-		}
-
-		private String convertInputStreamToString(InputStream inputStream) throws IOException {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-			String line = "";
-			String result = "";
-			while ((line = bufferedReader.readLine()) != null)
-				result += line;
-			inputStream.close();
-			return result;
-		}
-
-		protected void onProgressUpdate(String... a) {
-			// Log.v("Log", "You are in progress update ... " + a[0]);
-		}
-
-		protected void onPostExecute(List<Item> resultList) {
-			progress.dismiss();
-			endTime = System.currentTimeMillis();
-			out.setText((endTime - startTime) / 1000.0 + " s");
-
-			db.updateItems(resultList);
-			updateList();
-		}
-
-	} // --- END OF AsyncTask ---
 } // --- END OF ACTIVITY ---
