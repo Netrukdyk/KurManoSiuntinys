@@ -7,6 +7,7 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="21" />
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -16,10 +17,11 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" 
-            android:theme="@android:style/Theme.Holo.NoActionBar">
+            android:label="@string/title_activity_main"
+            android:theme="@android:style/Theme.Holo.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -37,25 +39,30 @@
             android:name=".ActivityItem"
             android:label="@string/title_activity_item" >
         </activity>
-        
-		<receiver
-	        android:name=".Alarm"
-	        android:exported="true" >
-	        <intent-filter>
-	            <action android:name="android.intent.action.NOTIFY" />
-	        </intent-filter>
-	    </receiver>
-		<receiver
-	        android:name=".ResponseReceiver"
-	        android:exported="true" >
-	        <intent-filter>
-	            <action android:name="ACTION_UPDATED" />
-	        </intent-filter>
-	    </receiver>        
+
+        <receiver
+            android:name=".Alarm"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.NOTIFY" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".ResponseReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="ACTION_UPDATED" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".Updater"
             android:exported="false" />
-            
+
+        <activity
+            android:name=".ActivitySettings"
+            android:label="@string/title_activity_activity_settings" >
+        </activity>
     </application>
 
 </manifest>

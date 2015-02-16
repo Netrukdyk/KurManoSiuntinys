@@ -79,7 +79,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
         public void onReceive(Context context, Intent intent) {
 			String text = intent.getStringExtra("msg");
 			Log.v("Track","Updated completed");
-            Toast.makeText(getApplicationContext(), "text", Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(), "text", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -119,8 +119,8 @@ public class ActivityTrack extends Activity implements OnClickListener {
 				startActivity(intent);
 				return true;
 			case R.id.action_settings :
-				// Intent intent = new Intent(this, ActivitySetting.class);
-				// startActivity(intent);
+				 Intent intentSettings = new Intent(this, ActivitySettings.class);
+				 startActivity(intentSettings);
 				// db.removeAll();
 				//updateList();
 				start();
