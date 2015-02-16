@@ -18,15 +18,29 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Updater extends IntentService {
 	static final String	ACTION_UPDATED	= "ACTION_UPDATED";
 	DatabaseHandler db;
+	SharedPreferences prefs;
 	public Updater() {
 		super("SimpleIntentService");
+	}
+	@Override
+	public void onCreate (){
+		super.onCreate();
 		this.db = new DatabaseHandler(this);
+		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 	}
 
 	@Override
@@ -40,14 +54,18 @@ public class Updater extends IntentService {
 		List<Item> resultList = checkOnline(itemList);
 		
 		// update db
-		if(resultList != null)
+		if(resultList != null){
 			db.updateItems(resultList);
+			
+		}
+		Log.v("PREFS",prefs.getInt("notifications",0)+"");
+		if(prefs.getInt("notifications",0)==1)
+			showNotification(this, "Updated", "Updatedd5f661616");
 		
 		// processing done here….
 		Intent broadcastIntent = new Intent();
 		broadcastIntent.setAction(ACTION_UPDATED);
-		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-		broadcastIntent.putExtra("msg", "Updated");
+		broadcastIntent.putExtra("msg", "Updatedd5f661616");
 		sendBroadcast(broadcastIntent);
 		
 		Log.v("Updater", "Done");
@@ -166,6 +184,33 @@ public class Updater extends IntentService {
 			return result;
 		}
 
+
+		public void showNotification(Context context, String title, String text) {
+
+			// define sound URI, the sound to be played when there's a notification
+			Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+			// intent triggered, you can add other intent for other actions
+			Intent intent = new Intent(context, ActivityTrack.class);
+			PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+			// this is it, we'll build the notification!
+			// in the addAction method, if you don't want any icon, just set the first param to 0
+			Notification mNotification = new Notification.Builder(context)
+
+			.setContentTitle(title).setContentText(text).setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).setSound(soundUri)
+
+			.addAction(R.drawable.ic_action_settings, "View", pIntent).addAction(0, "Remind", pIntent)
+
+			.build();
+
+			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+			// If you want to hide the notification after it was selected, do the code below
+			// myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+			notificationManager.notify(0, mNotification);
+		}
 //		protected void onPostExecute(List<Item> resultList) {
 //			progress.dismiss();
 //			endTime = System.currentTimeMillis();

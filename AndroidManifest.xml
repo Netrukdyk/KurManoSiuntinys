@@ -40,24 +40,17 @@
             android:label="@string/title_activity_item" >
         </activity>
 
-        <receiver
-            android:name=".Alarm"
-            android:exported="true" >
+        <receiver android:name=".Alarm" >
             <intent-filter>
                 <action android:name="android.intent.action.NOTIFY" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".ResponseReceiver"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="ACTION_UPDATED" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".Updater"
-            android:exported="false" />
+            android:enabled="true" />
+
+
 
         <activity
             android:name=".ActivitySettings"

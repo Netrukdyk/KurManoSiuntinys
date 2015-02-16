@@ -68,6 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				null);
 		if (cursor != null)
 			cursor.moveToFirst();
+		else return null;
 		Item item = new Item(cursor.getString(0), cursor.getString(1), Integer.parseInt(cursor.getString(2)), cursor.getString(3));
 		item.setItemInfo(getItemInfo(number));
 		return item;
