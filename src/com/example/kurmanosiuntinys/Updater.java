@@ -24,6 +24,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -116,6 +117,7 @@ public class Updater extends IntentService {
 
 				// --------- Parse HTML ----------------------------------------
 				String html = convertInputStreamToString(in);
+				Log.v("SIZE",html.length()+"");
 				Document doc = Jsoup.parse(html);
 				// ------------- FOUND -------------------------
 				Elements tables = doc.select("table");
@@ -177,11 +179,11 @@ public class Updater extends IntentService {
 		private String convertInputStreamToString(InputStream inputStream) throws IOException {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 			String line = "";
-			String result = "";
+			StringBuilder result = new StringBuilder(inputStream.available()); // !! NOT String += 
 			while ((line = bufferedReader.readLine()) != null)
-				result += line;
+				result.append(line);
 			inputStream.close();
-			return result;
+			return result.toString();
 		}
 
 
@@ -199,11 +201,14 @@ public class Updater extends IntentService {
 			Notification mNotification = new Notification.Builder(context)
 
 			.setContentTitle(title).setContentText(text).setSmallIcon(R.drawable.ic_launcher).setContentIntent(pIntent).setSound(soundUri)
-
+			.setLights(Color.RED, 300, 300)
 			.addAction(R.drawable.ic_action_settings, "View", pIntent).addAction(0, "Remind", pIntent)
-
+			.setPriority(Notification.PRIORITY_MAX)
 			.build();
-
+			mNotification.defaults = 0;
+			mNotification.defaults |= Notification.DEFAULT_LIGHTS;
+			mNotification.flags |= Notification.FLAG_SHOW_LIGHTS;			
+			mNotification.defaults |= Notification.DEFAULT_VIBRATE;
 			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 			// If you want to hide the notification after it was selected, do the code below

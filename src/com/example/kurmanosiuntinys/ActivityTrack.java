@@ -172,6 +172,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 					updateList();
 					dialog.dismiss();
 				} else{
+					
 					Toast.makeText(ActivityTrack.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
 				}
 					

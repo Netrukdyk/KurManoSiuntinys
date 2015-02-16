@@ -70,7 +70,7 @@ public class ActivitySettings extends Activity implements OnClickListener {
 	
 	public void setAlarm() {
         AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        int interval = 10; // sek
+        int interval = 30; // sek
 
         manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval*1000, pendingIntent);
         
