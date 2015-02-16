@@ -181,7 +181,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			values.put(KEY2_PLACE, itemInfo.getPlace());
 			values.put(KEY2_EXPLAIN, itemInfo.getExplain());
 
-			db.insert(TABLE_ITEMS_INFO, null, values); // Inserting Row			
+			//db.insert(TABLE_ITEMS_INFO, null, values); // Inserting Row		
+			db.insertWithOnConflict(TABLE_ITEMS_INFO, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 		//db.close(); // Closing database connection
 	}
