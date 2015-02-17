@@ -18,40 +18,52 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 
 public class ActivitySettings extends Activity implements OnClickListener {
-	
+
 	SharedPreferences prefs;
-	Switch switchNotificastions;
 	DatabaseHandler db;
 	private PendingIntent pendingIntent;
-	
+	private Switch switchNotificastions, switchAutoUpdate;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 		getActionBar().setBackgroundDrawable(null);
-		
+
 		db = new DatabaseHandler(this);
-		
+
 		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		
+
 		Intent alarmIntent = new Intent(this, Alarm.class);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);       
-        
-		switchNotificastions = (Switch) findViewById(R.id.switchNotifications);		
-		switchNotificastions.setChecked((prefs.getInt("notifications",0))==1);
+		pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+		switchNotificastions = (Switch) findViewById(R.id.switchNotifications);
+		switchAutoUpdate = (Switch) findViewById(R.id.switchAutoUpdate);
+
+		switchNotificastions.setChecked((prefs.getInt("notifications", 0)) == 1);
+		switchAutoUpdate.setChecked((prefs.getInt("auto_update", 0)) == 1);
+
 		switchNotificastions.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if(isChecked) 	setAlarm();
-				else 			unsetAlarm();
+				setPrefs("notifications", isChecked? 1:0);
 			}
 		});
-		
+		switchAutoUpdate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				if (isChecked)
+					setAlarm();
+				else
+					unsetAlarm();
+				setPrefs("auto_update", isChecked? 1:0);
+			}
+		});
 		findViewById(R.id.btn1).setOnClickListener(this);
 		findViewById(R.id.btn2).setOnClickListener(this);
 		findViewById(R.id.btn3).setOnClickListener(this);
 	}
-			
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -65,44 +77,38 @@ public class ActivitySettings extends Activity implements OnClickListener {
 				break;
 		}
 	}
-	
 
-	
+	private void setPrefs(String name, int value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt(name, value);
+		editor.apply();
+	}
+
 	public void setAlarm() {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        int interval = 30; // sek
+		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		int interval = 3*60*60; // sek // 3 val
+		manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval * 1000, pendingIntent);
+		Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
+	}
 
-        manager.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval*1000, pendingIntent);
-        
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("notifications", 1);
-        editor.apply();
-        
-        Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
-    }
+	public void unsetAlarm() {
+		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		manager.cancel(pendingIntent);
+		Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
+	}
 
-    public void unsetAlarm() {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        manager.cancel(pendingIntent);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("notifications", 0);
-        editor.apply();
-        Toast.makeText(this, "Alarm Canceled", Toast.LENGTH_SHORT).show();
-    }
+	public void startAt10() {
+		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		int interval = 1000 * 60 * 20;
 
-    public void startAt10() {
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        int interval = 1000 * 60 * 20;
+		/* Set the alarm to start at 10:30 AM */
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(System.currentTimeMillis());
+		calendar.set(Calendar.HOUR_OF_DAY, 10);
+		calendar.set(Calendar.MINUTE, 30);
 
-        /* Set the alarm to start at 10:30 AM */
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 30);
+		/* Repeating on every 20 minutes interval */
+		manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), interval, pendingIntent);
+	}
 
-        /* Repeating on every 20 minutes interval */
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-        		interval, pendingIntent);
-    }
-    
 }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -62,7 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 */
 
 	// Getting single item
-	Item getItem(String number) {
+	public Item getItem(String number) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ALIAS, KEY_NUMBER, KEY_STATUS, KEY_DATE }, KEY_NUMBER + "=?", new String[] { number }, null, null, null,
 				null);
@@ -112,23 +113,30 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// Updating single item
-	public void updateItem(Item item) {
+	public int updateItem(Item item) {
 		SQLiteDatabase db = this.getWritableDatabase();
-
+		int x = this.getItemInfo(item.getNumber()).size();
+		Log.v("DB BUVO",x+"");
+		int y = item.getItemInfo().size();
+		Log.v("DB YRA",y+"");
 		ContentValues values = new ContentValues();
 		values.put(KEY_ALIAS, item.getAlias());
 		values.put(KEY_NUMBER, item.getNumber());
 		values.put(KEY_STATUS, item.getStatusInt());		
 		addItemsInfo(item.getItemInfo());
 		// updating row
-		db.update(TABLE_ITEMS, values, KEY_NUMBER + " = ?", new String[] { String.valueOf(item.getNumber()) });				
+		db.update(TABLE_ITEMS, values, KEY_NUMBER + " = ?", new String[] { String.valueOf(item.getNumber()) });
+		return y-x;
 	}
 
 	// Update all list
-	public void updateItems(List<Item> items) {
+	public List<Item> updateItems(List<Item> items) {
+		List<Item> updatedItems = new ArrayList<Item>();
 		for (Item item : items) {
-			updateItem(item);
+			if(updateItem(item) > 0)
+				updatedItems.add(item);
 		}
+		return updatedItems;
 	}
 
 	// Deleting single item
@@ -150,6 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public void removeAll() {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_ITEMS, null, null);
+		db.delete(TABLE_ITEMS_INFO, null, null);
 	}
 
 	// --- ITEM INFO metodai-------------------------------------------------------

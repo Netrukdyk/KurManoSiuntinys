@@ -54,19 +54,27 @@ public class Updater extends IntentService {
 		// do http request
 		List<Item> resultList = checkOnline(itemList);
 		
+		
+		List<Item> changedList = null;
 		// update db
 		if(resultList != null){
-			db.updateItems(resultList);
-			
+			changedList = db.updateItems(resultList);
 		}
-		Log.v("PREFS",prefs.getInt("notifications",0)+"");
-		if(prefs.getInt("notifications",0)==1)
-			showNotification(this, "Updated", "Updatedd5f661616");
 		
-		// processing done here….
+		
 		Intent broadcastIntent = new Intent();
 		broadcastIntent.setAction(ACTION_UPDATED);
-		broadcastIntent.putExtra("msg", "Updatedd5f661616");
+		
+		
+		//Log.v("PREFS",prefs.getInt("notifications",0)+"");
+		if(changedList != null && prefs.getInt("notifications",0)==1 && changedList.size()>0)
+			for(Item item:changedList){
+				broadcastIntent.putExtra("msg", item.getAlias()+" "+item.getNumber());
+				showNotification(this, "Informacija atsinaujino", item.getAlias()+" "+item.getNumber());
+			}
+		
+		// processing done here….
+
 		sendBroadcast(broadcastIntent);
 		
 		Log.v("Updater", "Done");

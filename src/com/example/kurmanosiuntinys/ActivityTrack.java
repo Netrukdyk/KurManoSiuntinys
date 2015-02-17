@@ -53,7 +53,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Updater.ACTION_UPDATED);
         registerReceiver(receiver, filter);
-        updateList();
+        
 		
 	}
 
@@ -61,9 +61,13 @@ public class ActivityTrack extends Activity implements OnClickListener {
     @Override
     protected void onDestroy() {
         unregisterReceiver(receiver);
+        super.onDestroy();
+    }	
+    @Override
+    protected void onResume() {
+    	updateList();
         super.onPause();
     }	
-
 	private void getOverflowMenu() {
 		try {
 			ViewConfiguration config = ViewConfiguration.get(this);
