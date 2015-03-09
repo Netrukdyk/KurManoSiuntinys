@@ -220,7 +220,7 @@ public class Updater extends IntentService {
 			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 			// If you want to hide the notification after it was selected, do the code below
-			// myNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+			mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
 
 			notificationManager.notify(0, mNotification);
 		}

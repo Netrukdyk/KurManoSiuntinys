@@ -23,6 +23,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,12 +33,14 @@ public class ActivityTrack extends Activity implements OnClickListener {
 	String list[] = {"RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT"};
 	DatabaseHandler db;
 	BroadcastReceiver receiver;
+	ImageButton btnAdd, btnRefresh;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
-		getActionBar().setBackgroundDrawable(null);
-		getOverflowMenu();
+		//getActionBar().setBackgroundDrawable(null);
+		//getOverflowMenu();
 		db = new DatabaseHandler(this);
 		
 		receiver = new BroadcastReceiver(){
@@ -46,7 +49,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 				String text = intent.getStringExtra("msg");
 				Log.v("Track","Update completed");
 				updateList();
-	            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+	            //Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 	        }
 	    };
 	    
@@ -54,6 +57,10 @@ public class ActivityTrack extends Activity implements OnClickListener {
         filter.addAction(Updater.ACTION_UPDATED);
         registerReceiver(receiver, filter);
         
+        btnAdd = (ImageButton) findViewById(R.id.btn_add);
+        btnRefresh = (ImageButton) findViewById(R.id.btn_refresh);
+        btnAdd.setOnClickListener(this);
+        btnRefresh.setOnClickListener(this);
 		
 	}
 
@@ -89,6 +96,10 @@ public class ActivityTrack extends Activity implements OnClickListener {
 	public void updateList(List<Item> resultList) {
 		ListView myListView = (ListView) findViewById(R.id.listItems);
 		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, resultList);
+//		
+//		TextView footer = (TextView) view.findViewById(R.id.loadMore);
+//		getListView().addFooterView(footer);
+		
 		myListView.setAdapter(customAdapter);
 		myListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -182,14 +193,18 @@ public class ActivityTrack extends Activity implements OnClickListener {
 					
 			}
 		});
-	}
-	
-	
+	}		
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-
+			case R.id.btn_add:
+				showInputDialog();
+				break;
+			case R.id.btn_refresh:
+				Intent msgIntent = new Intent(this, Updater.class);
+				startService(msgIntent);
+				break;
 		}
 	}
 

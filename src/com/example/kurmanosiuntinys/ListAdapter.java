@@ -56,22 +56,23 @@ public class ListAdapter extends ArrayAdapter<Item> {
 			switch (status) {
 			case WRONGNUMBER:
 			case NOTFOUND:
-				icon = R.drawable.ic_box_red;
+				icon = R.drawable.ic_status_not_found;
 				break;
 			case TRANSIT:
-				icon = R.drawable.ic_box_yellow;
+				icon = R.drawable.ic_status_transit;
 				break;
 			case PICKUP:
+				icon = R.drawable.ic_status_pickup;
 			case DELIVERED:
-				icon = R.drawable.ic_box_green;
+				icon = R.drawable.ic_status_delivered;
 				break;
 			default:
 				break;
 			}
 			if (logoImg != null)
 				logoImg.setImageResource(icon);
-
 		}
+		
 		return v;
 	}
 }

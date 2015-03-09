@@ -3,28 +3,38 @@ package com.example.kurmanosiuntinys;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ActivityItem extends Activity {
-	TextView itemAlias, itemNumber;
+public class ActivityItem extends Activity implements OnClickListener{
+	TextView itemAlias, itemNumber, itemStatus;
 	ImageView logoImg;
 	DatabaseHandler db;
 	Item item;
+	ImageButton btnEdit, btnDelete;
 	
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item);
-
+        
+		btnEdit = (ImageButton) findViewById(R.id.btn_edit);
+		btnDelete = (ImageButton) findViewById(R.id.btn_delete);
+		btnEdit.setOnClickListener(this);
+		btnDelete.setOnClickListener(this);
+        
 		itemAlias = (TextView) findViewById(R.id.itemAlias);
 		itemNumber = (TextView) findViewById(R.id.itemNumber);
+		itemStatus = (TextView) findViewById(R.id.itemStatus);
 		logoImg = (ImageView) findViewById(R.id.itemImg);
 		db = new DatabaseHandler(this);
 		
@@ -37,25 +47,37 @@ public class ActivityItem extends Activity {
 				itemNumber.setText(item.getNumber());
 				Item.Status status = item.getStatus();
 
-				int icon = 0;
+				int icon = 0;				
 				switch (status) {
 					case WRONGNUMBER :
+						itemStatus.setTextColor(Color.RED);
+						itemStatus.setText("Neteisingas numeris");
+						icon = R.drawable.ic_status_not_found;
+						break;
 					case NOTFOUND :
-						icon = R.drawable.ic_box_red;
+						itemStatus.setTextColor(Color.RED);
+						itemStatus.setText("Nëra informacijos");
+						icon = R.drawable.ic_status_not_found;
 						break;
 					case TRANSIT :
-						icon = R.drawable.ic_box_yellow;
+						itemStatus.setTextColor(Color.GRAY);
+						itemStatus.setText("Siunèiama");
+						icon = R.drawable.ic_status_transit;
 						break;
 					case PICKUP :
+						itemStatus.setTextColor(0x8050FA50);
+						itemStatus.setText("Atsiimti paðte");
+						icon = R.drawable.ic_status_pickup;
 					case DELIVERED :
-						icon = R.drawable.ic_box_green;
+						itemStatus.setTextColor(Color.GREEN);
+						itemStatus.setText("Pristatyta");
+						icon = R.drawable.ic_status_delivered;
 						break;
 					default :
 						break;
 				}
-				if (logoImg != null)
-					logoImg.setImageResource(icon);
-
+				if (logoImg != null) logoImg.setImageResource(icon);				
+				
 				LinearLayout layout = (LinearLayout) findViewById(R.id.itemInfoLayout);
 				
 				for (ItemInfo itemInfo : item.getItemInfo()) {
@@ -95,5 +117,19 @@ public class ActivityItem extends Activity {
 			default :
 				return super.onOptionsItemSelected(menuItem);
 		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.btn_edit:
+				//showInputDialog();
+				break;
+			case R.id.btn_delete:
+				db.deleteItem(item);
+				finish();
+				break;
+		}
+		
 	}
 }
