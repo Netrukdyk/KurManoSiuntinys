@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/number"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/status0" />
+        android:src="@drawable/ic_status_transit" />
 
     <TextView
         android:id="@+id/date"
