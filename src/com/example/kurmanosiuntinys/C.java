@@ -13,6 +13,13 @@ public class C {
 	public static final String PREFS = "Settings";
 	public static final int RED = Color.argb(88, 215, 88, 88);
 	public static final int GREEN = Color.argb(88, 88, 215, 88);
+	public static final String WRONG = "Neteisingas numeris";
+	public static final String NOINFO = "Nëra informacijos";
+	public static final String TRANSIT = "Siunèiama";
+	public static final String PICKUP = "Atsiimti paðte";
+	public static final String DELIVERED = "Pristatyta";
+	
+	
 	enum Type {
 		STATUS, INFO, OTHER// 0, 1, 2
 	}

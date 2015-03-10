@@ -23,7 +23,7 @@ public class Item {
 	}
 
 	public void setAlias(String alias) {
-		this.alias = alias;
+		this.alias = (alias != null && alias != "") ? alias : "Siuntinys";
 	}
 
 	public String getAlias() {

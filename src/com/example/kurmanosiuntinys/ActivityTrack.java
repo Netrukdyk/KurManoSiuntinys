@@ -39,7 +39,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
-		//getActionBar().setBackgroundDrawable(null);
+		getActionBar().setBackgroundDrawable(null);
 		//getOverflowMenu();
 		db = new DatabaseHandler(this);
 		
@@ -185,6 +185,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 				if (C.checkNumber(myNumber)) {					
 					db.addItem(new Item(myAlias, myNumber, 1, C.getDate()));
 					updateList();
+					refreshData();
 					dialog.dismiss();
 				} else{
 					
@@ -195,6 +196,11 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		});
 	}		
 
+	public void refreshData(){
+		Intent msgIntent = new Intent(this, Updater.class);
+		startService(msgIntent);
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -202,8 +208,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 				showInputDialog();
 				break;
 			case R.id.btn_refresh:
-				Intent msgIntent = new Intent(this, Updater.class);
-				startService(msgIntent);
+				refreshData();
 				break;
 		}
 	}

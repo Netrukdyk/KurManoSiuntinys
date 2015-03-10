@@ -2,6 +2,8 @@ package com.example.kurmanosiuntinys;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,10 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager.LayoutParams;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ActivityItem extends Activity implements OnClickListener{
 	TextView itemAlias, itemNumber, itemStatus;
@@ -26,7 +31,9 @@ public class ActivityItem extends Activity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item);
-        
+		
+		getActionBar().setBackgroundDrawable(null);
+		
 		btnEdit = (ImageButton) findViewById(R.id.btn_edit);
 		btnDelete = (ImageButton) findViewById(R.id.btn_delete);
 		btnEdit.setOnClickListener(this);
@@ -42,56 +49,120 @@ public class ActivityItem extends Activity implements OnClickListener{
 		if (extras != null) {
 			String number = extras.getString("item");
 			if (number != null && number != "") {
-				item = db.getItem(number);
-				itemAlias.setText(item.getAlias());
-				itemNumber.setText(item.getNumber());
-				Item.Status status = item.getStatus();
-
-				int icon = 0;				
-				switch (status) {
-					case WRONGNUMBER :
-						itemStatus.setTextColor(Color.RED);
-						itemStatus.setText("Neteisingas numeris");
-						icon = R.drawable.ic_status_not_found;
-						break;
-					case NOTFOUND :
-						itemStatus.setTextColor(Color.RED);
-						itemStatus.setText("Nëra informacijos");
-						icon = R.drawable.ic_status_not_found;
-						break;
-					case TRANSIT :
-						itemStatus.setTextColor(Color.GRAY);
-						itemStatus.setText("Siunèiama");
-						icon = R.drawable.ic_status_transit;
-						break;
-					case PICKUP :
-						itemStatus.setTextColor(0x8050FA50);
-						itemStatus.setText("Atsiimti paðte");
-						icon = R.drawable.ic_status_pickup;
-					case DELIVERED :
-						itemStatus.setTextColor(Color.GREEN);
-						itemStatus.setText("Pristatyta");
-						icon = R.drawable.ic_status_delivered;
-						break;
-					default :
-						break;
-				}
-				if (logoImg != null) logoImg.setImageResource(icon);				
-				
-				LinearLayout layout = (LinearLayout) findViewById(R.id.itemInfoLayout);
-				
-				for (ItemInfo itemInfo : item.getItemInfo()) {
-					View v = getLayoutInflater().inflate(R.layout.item_info, null);
-					TextView date = (TextView) v.findViewById(R.id.date);
-					TextView place = (TextView) v.findViewById(R.id.place);
-					TextView explain = (TextView) v.findViewById(R.id.explain);					
-					explain.setText(itemInfo.getExplain());
-					place.setText(itemInfo.getPlace());
-					date.setText(itemInfo.getDate());			
-					layout.addView(v, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-				}
+				init(number);
 			}
 		}
+	}
+	
+	public void init(String number){
+		item = db.getItem(number);
+		itemAlias.setText(item.getAlias());
+		itemNumber.setText(item.getNumber());
+		Item.Status status = item.getStatus();
+
+		int icon = 0;				
+		switch (status) {
+			case WRONGNUMBER :
+				itemStatus.setTextColor(Color.RED);
+				itemStatus.setText(C.WRONG);
+				icon = R.drawable.ic_status_not_found;
+				break;
+			case NOTFOUND :
+				itemStatus.setTextColor(Color.RED);
+				itemStatus.setText(C.NOINFO);
+				icon = R.drawable.ic_status_not_found;
+				break;
+			case TRANSIT :
+				itemStatus.setTextColor(Color.GRAY);
+				itemStatus.setText(C.TRANSIT);
+				icon = R.drawable.ic_status_transit;
+				break;
+			case PICKUP :
+				itemStatus.setTextColor(0x8050FA50);
+				itemStatus.setText(C.PICKUP);
+				icon = R.drawable.ic_status_pickup;
+			case DELIVERED :
+				itemStatus.setTextColor(Color.GREEN);
+				itemStatus.setText(C.DELIVERED);
+				icon = R.drawable.ic_status_delivered;
+				break;
+			default :
+				break;
+		}
+		if (logoImg != null) logoImg.setImageResource(icon);				
+		
+		LinearLayout layout = (LinearLayout) findViewById(R.id.itemInfoLayout);
+		
+		for (ItemInfo itemInfo : item.getItemInfo()) {
+			View v = getLayoutInflater().inflate(R.layout.item_info, null);
+			TextView date = (TextView) v.findViewById(R.id.date);
+			TextView place = (TextView) v.findViewById(R.id.place);
+			TextView explain = (TextView) v.findViewById(R.id.explain);					
+			explain.setText(itemInfo.getExplain());
+			place.setText(itemInfo.getPlace());
+			date.setText(itemInfo.getDate());			
+			layout.addView(v, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+		}		
+		
+	}
+	
+	// --- ENTER NEW NUMBER DIALOG -------------------------------------------------
+		@SuppressLint("InflateParams")
+		private void showInputDialog() {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Pridëti naujà numerá");
+			View dialogView = getLayoutInflater().inflate(R.layout.new_dialog, null);
+
+			final EditText number = (EditText) dialogView.findViewById(R.id.dialogNumber);
+			number.setText(item.getNumber());
+			number.requestFocus();
+			number.setBackgroundColor(C.RED);
+			
+			// add OnTextChange LIstener
+			number.addTextChangedListener(new TextValidator(number) {
+			    @Override public void validate(TextView textView, String text) {
+			        if (C.checkNumber(text)) {
+			        	number.setBackgroundColor(C.GREEN);
+			        } else number.setBackgroundColor(C.RED);
+			     }
+			 });
+			final EditText alias = (EditText) dialogView.findViewById(R.id.dialogAlias);
+			alias.setText(item.getAlias());
+			builder.setView(dialogView);
+			builder.setPositiveButton("OK", null);
+			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+
+			final AlertDialog dialog = builder.create();
+			dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+			dialog.show();
+			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
+			@Override
+				public void onClick(View v){			
+					String myAlias = (alias.getText().toString() == "") ? "Siuntinys" : alias.getText().toString();
+					String myNumber = number.getText().toString();
+					item.setAlias(myAlias);
+					item.setNumber(myNumber);
+					if (C.checkNumber(myNumber)) {					
+						db.updateItem(item);
+						init(item.getNumber());
+						//refreshData();
+						dialog.dismiss();
+					} else{						
+						Toast.makeText(ActivityItem.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
+					}
+						
+				}
+			});
+		}
+		
+	public void refreshData(){
+		Intent msgIntent = new Intent(this, Updater.class);
+		startService(msgIntent);
 	}
 
 	@Override
@@ -123,7 +194,7 @@ public class ActivityItem extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.btn_edit:
-				//showInputDialog();
+				showInputDialog();
 				break;
 			case R.id.btn_delete:
 				db.deleteItem(item);

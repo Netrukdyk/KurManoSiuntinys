@@ -1,84 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/item"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:padding="10dp" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/border"
+    android:gravity="left"
+    android:padding="20dp" >
 
-            <ImageView
-                android:id="@+id/img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="10dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_status_transit"
-                android:contentDescription="@string/empty" />
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/alias"
+        android:layout_below="@+id/alias"
+        android:layout_marginBottom="10dp"
+        android:text="RC123456789HK"
+        android:textColor="@android:color/primary_text_dark"
+        android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/alias"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_toEndOf="@+id/img"
-                android:layout_toRightOf="@+id/img"
-                android:maxLines="1"
-                android:text="Siuntinio pavadinimas"
-                android:textColor="@android:color/primary_text_dark"
-                android:textSize="16sp" />
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img"
+        android:gravity="center"
+        android:text="Status"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/place"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/number"
-                android:layout_marginBottom="2dp"
-                android:layout_toRightOf="@+id/img"
-                android:layout_toEndOf="@+id/img"
-                android:text="Pašto pavadinimas, adresas"
-                android:textColor="@android:color/secondary_text_light" />
+    <TextView
+        android:id="@+id/alias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/img"
+        android:maxLines="1"
+        android:text="Siuntinio pavadinimas"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="16sp" />
 
-            <TextView
-                android:id="@+id/number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/alias"
-                android:layout_marginBottom="12dp"
-                android:layout_toRightOf="@+id/img"
-                android:layout_toEndOf="@+id/img"
-                android:text="RC123456789HK"
-                android:textColor="#444444"
-                android:textSize="12sp" />
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/number"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/status0" />
 
-            <TextView
-                android:id="@+id/explain"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/place"
-                android:layout_toRightOf="@+id/img"
-                android:layout_toEndOf="@+id/img"
-                android:text="Siuntinio statuso paaiškinimas."
-                android:textColor="@android:color/primary_text_light" />
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/alias"
+        android:layout_alignTop="@+id/number"
+        android:text="2015-01-01"
+        android:textColor="@android:color/primary_text_dark" />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/place"
-                android:layout_alignRight="@+id/place"
-                android:layout_alignEnd="@+id/place"
-                android:text="2015-01-01"
-                android:textColor="@android:color/primary_text_dark" />
-
-        </RelativeLayout>
-
+</RelativeLayout>

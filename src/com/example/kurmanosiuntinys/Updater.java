@@ -161,9 +161,9 @@ public class Updater extends IntentService {
 				Elements errors = doc.getElementsByClass("notfound");
 				Log.v("JSoup", errors.size() + " errors");
 				for (Element number : errors) {
-					Item item = new Item();
-					item.setAlias("Siuntinys");
+					Item item = new Item();					
 					item.setNumber(number.getElementsByTag("strong").text());
+					item.setAlias(db.getItem(item.getNumber()).getAlias());
 
 					Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
 					if (!details.isEmpty())
