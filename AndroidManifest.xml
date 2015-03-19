@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.kurmanosiuntinys"
-    android:versionCode="4"
-    android:versionName="0.6" >
+    android:versionCode="5"
+    android:versionName="0.7" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -26,8 +26,7 @@
         </activity>
         <activity
             android:name=".ActivityTrack"
-            android:label="@string/title_activity_track"
-            android:theme="@android:style/Theme.Holo">
+            android:label="@string/title_activity_track">
         </activity>
         <activity
             android:name=".ActivityAbout"
@@ -36,8 +35,7 @@
         </activity>
         <activity
             android:name=".ActivityItem"
-            android:label="@string/title_activity_item"
-            android:theme="@android:style/Theme.Holo" >
+            android:label="@string/title_activity_item">
         </activity>
 
         <receiver android:name=".Alarm" >

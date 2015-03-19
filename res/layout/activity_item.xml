@@ -5,66 +5,65 @@
     android:layout_height="fill_parent"
     android:background="#ffFFD400"
     android:orientation="vertical"
-    android:padding="3dp" >
+    android:padding="10dp" >
 
-    <RelativeLayout
-        android:id="@+id/item"
-        style="android:buttonStyle"
+<RelativeLayout
+    android:id="@+id/item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_background"
+    android:gravity="left"
+    android:padding="7dp" >
+
+    <TextView
+        android:id="@+id/itemNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/itemAlias"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/itemAlias"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
+        android:text="RC123456789HK"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/itemAlias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="Siuntinio pavadinimas"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/itemImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/itemNumber"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/ic_status_transit" />
+
+    <TextView
+        android:id="@+id/itemStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#20000000"
-        android:padding="10dp" >
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/itemImg"
+        android:gravity="center"
+        android:paddingTop="5dp"
+        android:text="Status"
+        android:textColor="@android:color/primary_text_dark"
+        android:textSize="16sp" />
 
-        <ImageView
-            android:id="@+id/itemImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:contentDescription="@string/empty"
-            android:src="@drawable/ic_status_transit" />
-
-        <TextView
-            android:id="@+id/itemAlias"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/itemImg"
-            android:layout_toRightOf="@+id/itemImg"
-            android:maxLines="1"
-            android:text="Siuntinio pavadinimas"
-            android:textColor="@android:color/primary_text_dark"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/itemNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/itemAlias"            
-            android:layout_toEndOf="@+id/itemImg"
-            android:layout_toRightOf="@+id/itemImg"
-            android:text="RC123456789HK"
-            android:textColor="#444444"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/itemStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/itemNumber"
-            android:layout_below="@id/itemNumber"
-            android:layout_marginBottom="12dp"
-            android:text="Statusas"
-            android:textColor="@android:color/primary_text_dark" />
-
-    </RelativeLayout>
+</RelativeLayout>
 
     <ScrollView
         android:id="@+id/ScrollView1"
@@ -77,34 +76,17 @@
             android:id="@+id/itemInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="-6dp"
+            android:background="@drawable/item_background"
             android:clipToPadding="false"
             android:divider="@drawable/divider"
             android:orientation="vertical"
-            android:paddingBottom="100dp"
+            android:paddingBottom="50dp"
             android:showDividers="middle" >
+
         </LinearLayout>
     </ScrollView>
-
-    <ImageButton
-        android:id="@+id/btn_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="5dp"
-        android:alpha="0.6"
-        android:background="@null"
-        android:src="@drawable/ic_action_edit" />
-
-    <ImageButton
-        android:id="@+id/btn_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="5dp"
-        android:alpha="0.6"
-        android:background="@null"
-        android:src="@drawable/ic_action_delete" />
 
 </RelativeLayout>

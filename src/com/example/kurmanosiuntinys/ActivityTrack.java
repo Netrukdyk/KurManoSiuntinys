@@ -17,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
@@ -28,7 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ActivityTrack extends Activity implements OnClickListener {
+public class ActivityTrack extends Activity {
 
 	String list[] = {"RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT"};
 	DatabaseHandler db;
@@ -39,7 +38,7 @@ public class ActivityTrack extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
-		getActionBar().setBackgroundDrawable(null);
+		//getActionBar().setBackgroundDrawable(null);
 		//getOverflowMenu();
 		db = new DatabaseHandler(this);
 		
@@ -56,11 +55,6 @@ public class ActivityTrack extends Activity implements OnClickListener {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Updater.ACTION_UPDATED);
         registerReceiver(receiver, filter);
-        
-        btnAdd = (ImageButton) findViewById(R.id.btn_add);
-        btnRefresh = (ImageButton) findViewById(R.id.btn_refresh);
-        btnAdd.setOnClickListener(this);
-        btnRefresh.setOnClickListener(this);
 		
 	}
 
@@ -136,9 +130,8 @@ public class ActivityTrack extends Activity implements OnClickListener {
 			case R.id.action_add :
 				showInputDialog();
 				return true;
-			case R.id.action_refresh :				
-				Intent msgIntent = new Intent(this, Updater.class);
-				startService(msgIntent);
+			case R.id.action_refresh :
+				refreshData();
 				return true;
 			default :
 				return super.onOptionsItemSelected(item);
@@ -200,18 +193,5 @@ public class ActivityTrack extends Activity implements OnClickListener {
 		Intent msgIntent = new Intent(this, Updater.class);
 		startService(msgIntent);
 	}
-	
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.btn_add:
-				showInputDialog();
-				break;
-			case R.id.btn_refresh:
-				refreshData();
-				break;
-		}
-	}
-
 
 } // --- END OF ACTIVITY ---

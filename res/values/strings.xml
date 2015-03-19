@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_activity_track">Siuntų sekimas</string>
+    <string name="title_activity_track">Mano siuntos</string>
     <string name="title_activity_about">Apie</string>
+    <string name="title_activity_item">Siunta</string>
+    <string name="title_activity_main">Siuntų sekimas</string>
     <string name="action_add">Pridėti</string>
     <string name="action_edit">Redaguoti</string>
     <string name="action_delete">Ištrinti</string>
@@ -10,8 +12,5 @@
     <string name="action_info">Apie</string>
     <string name="Status">Status</string>
     <string name="empty"></string>
-    <string name="server">Server</string>
-    <string name="title_activity_item">Siuntinys</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_main">Siuntų sekimas</string>
+    <string name="server">Server</string> 
 </resources>

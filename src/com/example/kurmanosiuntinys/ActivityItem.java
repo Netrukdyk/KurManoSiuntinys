@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ActivityItem extends Activity implements OnClickListener{
+public class ActivityItem extends Activity {
 	TextView itemAlias, itemNumber, itemStatus;
 	ImageView logoImg;
 	DatabaseHandler db;
@@ -32,12 +31,7 @@ public class ActivityItem extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item);
 		
-		getActionBar().setBackgroundDrawable(null);
-		
-		btnEdit = (ImageButton) findViewById(R.id.btn_edit);
-		btnDelete = (ImageButton) findViewById(R.id.btn_delete);
-		btnEdit.setOnClickListener(this);
-		btnDelete.setOnClickListener(this);
+		//getActionBar().setBackgroundDrawable(null);
         
 		itemAlias = (TextView) findViewById(R.id.itemAlias);
 		itemNumber = (TextView) findViewById(R.id.itemNumber);
@@ -63,26 +57,21 @@ public class ActivityItem extends Activity implements OnClickListener{
 		int icon = 0;				
 		switch (status) {
 			case WRONGNUMBER :
-				itemStatus.setTextColor(Color.RED);
 				itemStatus.setText(C.WRONG);
 				icon = R.drawable.ic_status_not_found;
 				break;
 			case NOTFOUND :
-				itemStatus.setTextColor(Color.RED);
 				itemStatus.setText(C.NOINFO);
 				icon = R.drawable.ic_status_not_found;
 				break;
 			case TRANSIT :
-				itemStatus.setTextColor(Color.GRAY);
 				itemStatus.setText(C.TRANSIT);
 				icon = R.drawable.ic_status_transit;
 				break;
 			case PICKUP :
-				itemStatus.setTextColor(0x8050FA50);
 				itemStatus.setText(C.PICKUP);
 				icon = R.drawable.ic_status_pickup;
 			case DELIVERED :
-				itemStatus.setTextColor(Color.GREEN);
 				itemStatus.setText(C.DELIVERED);
 				icon = R.drawable.ic_status_delivered;
 				break;
@@ -180,6 +169,7 @@ public class ActivityItem extends Activity implements OnClickListener{
 				startActivity(intent);
 				return true;
 			case R.id.action_edit :
+				showInputDialog();
 				return true;
 			case R.id.action_delete:
 				db.deleteItem(item);
@@ -190,17 +180,4 @@ public class ActivityItem extends Activity implements OnClickListener{
 		}
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.btn_edit:
-				showInputDialog();
-				break;
-			case R.id.btn_delete:
-				db.deleteItem(item);
-				finish();
-				break;
-		}
-		
-	}
 }
