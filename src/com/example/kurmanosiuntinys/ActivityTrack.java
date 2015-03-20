@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -30,51 +31,52 @@ import android.widget.Toast;
 
 public class ActivityTrack extends Activity {
 
-	String list[] = {"RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT"};
-	DatabaseHandler db;
-	BroadcastReceiver receiver;
-	ImageButton btnAdd, btnRefresh;
-	
-	ProgressDialog updatingDialog;
-	
-	String msg;
-	
+	String				list[]	= { "RC313227871HK", "RN037964246LT", "RS117443425NL", "RT123456789LT", "R123456LT" };
+	DatabaseHandler		db;
+	BroadcastReceiver	receiver;
+	ImageButton			btnAdd, btnRefresh;
+
+	ProgressDialog		updatingDialog;
+
+	String				msg;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
-		//getActionBar().setBackgroundDrawable(null);
-		//getOverflowMenu();
+		// getActionBar().setBackgroundDrawable(null);
+		// getOverflowMenu();
 		db = new DatabaseHandler(this);
-		
-		receiver = new BroadcastReceiver(){
-	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	        	updatingDialog.dismiss();
+
+		receiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				updatingDialog.dismiss();
 				String text = intent.getStringExtra("msg");
-				Log.v("Track","Update completed");
+				Log.v("Track", "Update completed");
 				updateList();
-	            //Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-	        }
-	    };
-	    
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Updater.ACTION_UPDATED);
-        registerReceiver(receiver, filter);
-		
+				// Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+			}
+		};
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Updater.ACTION_UPDATED);
+		registerReceiver(receiver, filter);
+
 	}
 
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(receiver);
+		super.onDestroy();
+	}
 
-    @Override
-    protected void onDestroy() {
-        unregisterReceiver(receiver);
-        super.onDestroy();
-    }	
-    @Override
-    protected void onResume() {
-    	updateList();
-        super.onPause();
-    }	
+	@Override
+	protected void onResume() {
+		updateList();
+		super.onPause();
+	}
+
 	private void getOverflowMenu() {
 		try {
 			ViewConfiguration config = ViewConfiguration.get(this);
@@ -88,7 +90,6 @@ public class ActivityTrack extends Activity {
 		}
 	}
 
-
 	public void updateList() {
 		updateList(db.getAllItems(false));
 	}
@@ -96,10 +97,10 @@ public class ActivityTrack extends Activity {
 	public void updateList(List<Item> resultList) {
 		ListView myListView = (ListView) findViewById(R.id.listItems);
 		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, resultList);
-//		
-//		TextView footer = (TextView) view.findViewById(R.id.loadMore);
-//		getListView().addFooterView(footer);
-		
+		//
+		// TextView footer = (TextView) view.findViewById(R.id.loadMore);
+		// getListView().addFooterView(footer);
+
 		myListView.setAdapter(customAdapter);
 		myListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -124,35 +125,35 @@ public class ActivityTrack extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.action_about :
-				Intent intent = new Intent(this, ActivityAbout.class);
-				startActivity(intent);
-				return true;
-			case R.id.action_settings :
-				 Intent intentSettings = new Intent(this, ActivitySettings.class);
-				 startActivity(intentSettings);
-				 updateList();
-				return true;
-			case R.id.action_add :
-				showInputDialog();
-				return true;
-			case R.id.action_refresh :
-				refreshData();
-				return true;
-			case R.id.action_backup :
-				msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
-				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-				return true;
-			case R.id.action_restore :
-				msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
-				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-				return true;	
-			default :
-				return super.onOptionsItemSelected(item);
+		case R.id.action_about:
+			Intent intent = new Intent(this, ActivityAbout.class);
+			startActivity(intent);
+			return true;
+		case R.id.action_settings:
+			Intent intentSettings = new Intent(this, ActivitySettings.class);
+			startActivity(intentSettings);
+			updateList();
+			return true;
+		case R.id.action_add:
+			showInputDialog();
+			return true;
+		case R.id.action_refresh:
+			refreshData();
+			return true;
+		case R.id.action_backup:
+			msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
+			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+			return true;
+		case R.id.action_restore:
+			msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-// --- ENTER NEW NUMBER DIALOG -------------------------------------------------
+
+	// --- ENTER NEW NUMBER DIALOG -------------------------------------------------
 	@SuppressLint("InflateParams")
 	private void showInputDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -162,15 +163,17 @@ public class ActivityTrack extends Activity {
 		final EditText number = (EditText) dialogView.findViewById(R.id.dialogNumber);
 		number.requestFocus();
 		number.setBackgroundColor(C.RED);
-		
+
 		// add OnTextChange LIstener
 		number.addTextChangedListener(new TextValidator(number) {
-		    @Override public void validate(TextView textView, String text) {
-		        if (C.checkNumber(text)) {
-		        	number.setBackgroundColor(C.GREEN);
-		        } else number.setBackgroundColor(C.RED);
-		     }
-		 });
+			@Override
+			public void validate(TextView textView, String text) {
+				if (C.checkNumber(text)) {
+					number.setBackgroundColor(C.GREEN);
+				} else
+					number.setBackgroundColor(C.RED);
+			}
+		});
 		final EditText alias = (EditText) dialogView.findViewById(R.id.dialogAlias);
 		builder.setView(dialogView);
 		builder.setPositiveButton("OK", null);
@@ -184,28 +187,47 @@ public class ActivityTrack extends Activity {
 		final AlertDialog dialog = builder.create();
 		dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		dialog.show();
-		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
-		@Override
-			public void onClick(View v){			
+		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
 				String myAlias = (alias.getText().toString() == "") ? "Siuntinys" : alias.getText().toString();
 				String myNumber = number.getText().toString();
-				if (C.checkNumber(myNumber)) {					
+				if (C.checkNumber(myNumber)) {
 					db.addItem(new Item(myAlias, myNumber, 1, C.getDate()));
 					updateList();
 					refreshData();
 					dialog.dismiss();
-				} else{
-					
+				} else {
+
 					Toast.makeText(ActivityTrack.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
 				}
-					
+
 			}
 		});
-	}		
+	}
 
-	public void refreshData(){
-		updatingDialog = ProgressDialog.show(ActivityTrack.this, "","Atnaujinama...", true);
-		Intent msgIntent = new Intent(this, Updater.class);
+	public void refreshData() {
+		// service intent
+		final Intent msgIntent = new Intent(this, Updater.class);
+
+		updatingDialog = new ProgressDialog(ActivityTrack.this);
+		updatingDialog.setMessage("Atnaujinama...");
+		updatingDialog.setCancelable(false);
+		updatingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Atðaukti", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		updatingDialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				stopService(msgIntent);
+			}
+		});
+		updatingDialog.show();
+
+		// call service
 		startService(msgIntent);
 	}
 

@@ -3,8 +3,10 @@ package com.example.kurmanosiuntinys;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,6 +26,7 @@ public class ActivityItem extends Activity {
 	DatabaseHandler db;
 	Item item;
 	ImageButton btnEdit, btnDelete;
+	ProgressDialog	updatingDialog;
 	
 	@SuppressLint("InflateParams")
 	@Override
@@ -105,8 +108,11 @@ public class ActivityItem extends Activity {
 			final EditText number = (EditText) dialogView.findViewById(R.id.dialogNumber);
 			number.setText(item.getNumber());
 			number.requestFocus();
-			number.setBackgroundColor(C.RED);
-			
+		
+	        if (C.checkNumber(number.getText().toString())) {
+	        	number.setBackgroundColor(C.GREEN);
+	        } else number.setBackgroundColor(C.RED);
+	        
 			// add OnTextChange LIstener
 			number.addTextChangedListener(new TextValidator(number) {
 			    @Override public void validate(TextView textView, String text) {
@@ -149,10 +155,30 @@ public class ActivityItem extends Activity {
 			});
 		}
 		
-	public void refreshData(){
-		Intent msgIntent = new Intent(this, Updater.class);
-		startService(msgIntent);
-	}
+		public void refreshData() {
+			// service intent
+			final Intent msgIntent = new Intent(this, Updater.class);
+
+			updatingDialog = new ProgressDialog(ActivityItem.this);
+			updatingDialog.setMessage("Atnaujinama...");
+			updatingDialog.setCancelable(false);
+			updatingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Atðaukti", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+			updatingDialog.setOnDismissListener(new OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					stopService(msgIntent);
+				}
+			});
+			updatingDialog.show();
+
+			// call service
+			startService(msgIntent);
+		}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
