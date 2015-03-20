@@ -37,6 +37,8 @@ public class ActivityTrack extends Activity {
 	
 	ProgressDialog updatingDialog;
 	
+	String msg;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -137,6 +139,14 @@ public class ActivityTrack extends Activity {
 			case R.id.action_refresh :
 				refreshData();
 				return true;
+			case R.id.action_backup :
+				msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
+				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.action_restore :
+				msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+				Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+				return true;	
 			default :
 				return super.onOptionsItemSelected(item);
 		}

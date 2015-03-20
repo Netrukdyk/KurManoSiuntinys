@@ -31,5 +31,16 @@
         android:orderInCategory="85"
         android:showAsAction="never"
         android:title="@string/action_settings"/>    
-
+    <item
+        android:id="@+id/action_backup"
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="85"
+        android:showAsAction="never"
+        android:title="Backup DB"/>
+    <item
+        android:id="@+id/action_restore"
+        android:icon="@drawable/ic_action_settings"
+        android:orderInCategory="85"
+        android:showAsAction="never"
+        android:title="Restore DB"/>    
 </menu>
