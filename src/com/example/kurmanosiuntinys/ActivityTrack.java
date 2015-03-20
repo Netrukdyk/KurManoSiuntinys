@@ -6,6 +6,7 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +35,8 @@ public class ActivityTrack extends Activity {
 	BroadcastReceiver receiver;
 	ImageButton btnAdd, btnRefresh;
 	
+	ProgressDialog updatingDialog;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,6 +48,7 @@ public class ActivityTrack extends Activity {
 		receiver = new BroadcastReceiver(){
 	        @Override
 	        public void onReceive(Context context, Intent intent) {
+	        	updatingDialog.dismiss();
 				String text = intent.getStringExtra("msg");
 				Log.v("Track","Update completed");
 				updateList();
@@ -190,6 +194,7 @@ public class ActivityTrack extends Activity {
 	}		
 
 	public void refreshData(){
+		updatingDialog = ProgressDialog.show(ActivityTrack.this, "","Atnaujinama...", true);
 		Intent msgIntent = new Intent(this, Updater.class);
 		startService(msgIntent);
 	}
