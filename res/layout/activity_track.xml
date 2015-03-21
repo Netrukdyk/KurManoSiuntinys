@@ -17,11 +17,15 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginStart="10dp"
         android:clipToPadding="false"
         android:divider="@null"
         android:dividerHeight="15dp"
-        android:paddingBottom="50dp" >
+        android:paddingBottom="50dp"
+        android:paddingTop="20dp" >
 
     </ListView>
 

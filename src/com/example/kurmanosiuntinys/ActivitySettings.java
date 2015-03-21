@@ -28,7 +28,7 @@ public class ActivitySettings extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
-		getActionBar().setBackgroundDrawable(null);
+		//getActionBar().setBackgroundDrawable(null);
 
 		db = new DatabaseHandler(this);
 

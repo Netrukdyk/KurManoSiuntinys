@@ -5,12 +5,14 @@
     android:layout_height="fill_parent"
     android:background="#ffFFD400"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp" >
 
 <RelativeLayout
     android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
     android:background="@drawable/list_background"
     android:gravity="left"
     android:padding="7dp" >
@@ -70,14 +72,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/item" >
+        android:layout_below="@+id/item"
+        android:layout_marginEnd="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginStart="15dp" >
 
         <LinearLayout
             android:id="@+id/itemInfoLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="-6dp"
             android:background="@drawable/item_background"
             android:clipToPadding="false"

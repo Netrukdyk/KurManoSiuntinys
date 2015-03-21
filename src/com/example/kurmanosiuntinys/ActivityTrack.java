@@ -142,10 +142,12 @@ public class ActivityTrack extends Activity {
 			return true;
 		case R.id.action_backup:
 			msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
+			updateList();
 			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_restore:
 			msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+			updateList();
 			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 			return true;
 		default:

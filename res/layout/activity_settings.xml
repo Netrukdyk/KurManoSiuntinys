@@ -2,12 +2,13 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scroll"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#ffFFD400"
         android:orientation="vertical"
         android:padding="10dp" >
@@ -18,7 +19,7 @@
             android:layout_height="64dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:text="Periodical updates"
+            android:text="Periodiškai tikrinti"
             android:textColor="@android:color/primary_text_light" />
 
         <Switch
@@ -28,7 +29,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:gravity="left|center_vertical"
-            android:text="Notifications"
+            android:text="Garsiniai pranešimai"
             android:textColor="@android:color/primary_text_light" />
 
         <Space
@@ -39,7 +40,7 @@
             android:id="@+id/btn1"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="Clear DB" />
+            android:text="Ištrinti visus numerius" />
 
         <Button
             android:id="@+id/btn2"

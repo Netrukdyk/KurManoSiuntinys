@@ -4,13 +4,14 @@
     <string name="title_activity_about">Apie</string>
     <string name="title_activity_item">Siunta</string>
     <string name="title_activity_main">Siuntų sekimas</string>
+    <string name="title_activity_settings">Nustatymai</string>
     <string name="action_add">Pridėti</string>
     <string name="action_edit">Redaguoti</string>
     <string name="action_delete">Ištrinti</string>
     <string name="action_refresh">Atnaujinti</string>
     <string name="action_settings">Nustatymai</string>
     <string name="action_info">Apie</string>
-    <string name="Status">Status</string>
+    <string name="Status">Būsena</string>
     <string name="empty"></string>
-    <string name="server">Server</string> 
+    <string name="server">Serveris</string> 
 </resources>
