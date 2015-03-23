@@ -146,6 +146,7 @@ public class ActivityItem extends Activity {
 						db.updateItem(item);
 						init(item.getNumber());
 						//refreshData();
+						C.exportDB();
 						dialog.dismiss();
 					} else{						
 						Toast.makeText(ActivityItem.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
@@ -199,6 +200,7 @@ public class ActivityItem extends Activity {
 				return true;
 			case R.id.action_delete:
 				db.deleteItem(item);
+				C.exportDB();
 				finish();
 				return true;
 			default :

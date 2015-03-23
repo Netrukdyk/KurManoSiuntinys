@@ -141,14 +141,10 @@ public class ActivityTrack extends Activity {
 			refreshData();
 			return true;
 		case R.id.action_backup:
-			msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
-			updateList();
-			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+			backup();
 			return true;
 		case R.id.action_restore:
-			msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
-			updateList();
-			Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+			restore();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -198,6 +194,7 @@ public class ActivityTrack extends Activity {
 					db.addItem(new Item(myAlias, myNumber, 1, C.getDate()));
 					updateList();
 					refreshData();
+					backup();
 					dialog.dismiss();
 				} else {
 
@@ -206,6 +203,18 @@ public class ActivityTrack extends Activity {
 
 			}
 		});
+	}
+
+	public void backup() {
+		msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
+		updateList();
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+	}
+
+	public void restore() {
+		msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+		updateList();
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
 
 	public void refreshData() {
