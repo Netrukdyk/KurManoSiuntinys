@@ -3,19 +3,15 @@ package com.example.kurmanosiuntinys;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 public class C {
 	public static final String	IP			= "192.168.1.200";
@@ -52,6 +48,7 @@ public class C {
 	}
 
 	// DATABASE IMPORT
+	@SuppressWarnings("resource")
 	public static boolean importDB() {
 		try {
 			File sd = Environment.getExternalStorageDirectory();
@@ -80,6 +77,7 @@ public class C {
 		return false;
 	}
 
+	@SuppressWarnings("resource")
 	public static boolean exportDB() {
 		try {
 			File sd = Environment.getExternalStorageDirectory();

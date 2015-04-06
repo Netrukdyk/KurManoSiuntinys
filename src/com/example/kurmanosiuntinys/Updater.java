@@ -110,7 +110,7 @@ public class Updater extends IntentService {
 		int m = count % 5;
 		// 0-1 5-1 6-2 10-2 11-3
 		for (int i = 0; i < n; i++) {
-			resultList.addAll(checkOnline5(numbers.subList(i * 5, i * 5 + 4)));
+			resultList.addAll(checkOnline5(numbers.subList(i * 5, i * 5 + 5)));
 		}
 		resultList.addAll(checkOnline5(numbers.subList(n * 5, n * 5 + m)));
 
@@ -119,12 +119,14 @@ public class Updater extends IntentService {
 	}
 
 	private List<Item> checkOnline5(List<Item> numbers) {
-
-		if (numbers.size() == 0)
-			return null;
-
+		
 		List<Item> resultList = new ArrayList<Item>();
 		resultList.clear();
+		
+		if (numbers.size() == 0)
+			return resultList;
+
+
 
 		// formuojam get uþklausà
 		String query = "";
@@ -166,11 +168,11 @@ public class Updater extends IntentService {
 							item.addItemInfo(itemInfo);
 						}
 					}
-					if (!item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
-							&& !item.getLastItemInfo().getExplain().contains("Siunta paðte priimta ið siuntëjo"))
-						item.setStatus(Item.Status.PICKUP);
-					else if (item.getLastItemInfo().getPlace().contains("Paðto skirstymo departamentas")
-							&& item.getLastItemInfo().getExplain().contains("Siunta iðsiøsta á uþsiená"))
+					
+					// STATUS RULES
+					if (item.getLastItemInfo().getExplain().contains("Siunta pristatyta ir áteikta gavëjui"))
+						item.setStatus(Item.Status.DELIVERED);
+					else if (item.getLastItemInfo().getExplain().contains("siunta perduota kurjeriui/laiðkininkui arba palikta paðte"))
 						item.setStatus(Item.Status.PICKUP);
 					else
 						item.setStatus(Item.Status.TRANSIT);

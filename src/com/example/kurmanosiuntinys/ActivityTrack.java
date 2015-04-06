@@ -45,14 +45,15 @@ public class ActivityTrack extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
 		// getActionBar().setBackgroundDrawable(null);
-		// getOverflowMenu();
+		getActionBar().setHomeButtonEnabled(true); // enable home btn
+		getOverflowMenu();
 		db = new DatabaseHandler(this);
 
 		receiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				updatingDialog.dismiss();
-				String text = intent.getStringExtra("msg");
+				//String text = intent.getStringExtra("msg");
 				Log.v("Track", "Update completed");
 				updateList();
 				// Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
@@ -146,6 +147,11 @@ public class ActivityTrack extends Activity {
 		case R.id.action_restore:
 			restore();
 			return true;
+       case android.R.id.home:
+            Intent homeIntent = new Intent(this, MainActivity.class);
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
+            return true;			
 		default:
 			return super.onOptionsItemSelected(item);
 		}

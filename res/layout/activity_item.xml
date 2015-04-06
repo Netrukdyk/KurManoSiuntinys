@@ -14,7 +14,6 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
     android:background="@drawable/list_background"
-    android:gravity="left"
     android:padding="7dp" >
 
     <TextView

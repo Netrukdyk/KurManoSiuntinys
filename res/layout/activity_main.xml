@@ -69,13 +69,13 @@
             android:drawableLeft="@drawable/ic_map"
             android:drawablePadding="10dp"
             android:drawableStart="@drawable/ic_map"
-            android:gravity="center_vertical|start|left"
+            android:gravity="center_vertical|start"
             android:text="Paštai ir pašto dėžutės" />
 
         <TextView
             android:id="@+id/copyright"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="bottom"
             android:layout_marginTop="20dp"
             android:layout_weight="0.41"

@@ -70,6 +70,7 @@ public class ListAdapter extends ArrayAdapter<Item> {
 			case PICKUP:
 				statusText.setText(C.PICKUP);
 				icon = R.drawable.ic_status_pickup;
+				break;
 			case DELIVERED:
 				statusText.setText(C.DELIVERED);
 				icon = R.drawable.ic_status_delivered;

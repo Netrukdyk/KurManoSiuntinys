@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnDismissListener;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +34,8 @@ public class ActivityItem extends Activity {
 		setContentView(R.layout.activity_item);
 		
 		//getActionBar().setBackgroundDrawable(null);
-        
+		getActionBar().setHomeButtonEnabled(true); // enable home btn
+		
 		itemAlias = (TextView) findViewById(R.id.itemAlias);
 		itemNumber = (TextView) findViewById(R.id.itemNumber);
 		itemStatus = (TextView) findViewById(R.id.itemStatus);
@@ -51,6 +51,7 @@ public class ActivityItem extends Activity {
 		}
 	}
 	
+	@SuppressLint("InflateParams")
 	public void init(String number){
 		item = db.getItem(number);
 		itemAlias.setText(item.getAlias());
@@ -74,6 +75,7 @@ public class ActivityItem extends Activity {
 			case PICKUP :
 				itemStatus.setText(C.PICKUP);
 				icon = R.drawable.ic_status_pickup;
+				break;
 			case DELIVERED :
 				itemStatus.setText(C.DELIVERED);
 				icon = R.drawable.ic_status_delivered;
