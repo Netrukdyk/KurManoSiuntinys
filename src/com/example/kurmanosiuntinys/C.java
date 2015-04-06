@@ -3,8 +3,11 @@ package com.example.kurmanosiuntinys;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -47,13 +50,40 @@ public class C {
 		return false;
 	}
 
+	public static boolean isTimeInRange(String silenceStart, String silenceEnd) {
+		Calendar now = Calendar.getInstance();
+		int hour = now.get(Calendar.HOUR);
+		int minute = now.get(Calendar.MINUTE);
+
+		Date date = parseDate(hour + ":" + minute, "HH:mm");
+		Date dateBegin = parseDate(silenceStart, "HH:mm");
+		Date dateEnd = parseDate(silenceEnd, "HH:mm");
+
+		if (dateBegin.before(date) && dateEnd.after(date)) {
+			// in range
+			return true;
+		}
+		return false;
+	}
+
+	private static Date parseDate(String date, String inputFormat) {
+		SimpleDateFormat inputParser = new SimpleDateFormat(inputFormat, Locale.US);
+		try {
+			return inputParser.parse(date);
+		} catch (java.text.ParseException e) {
+			return new Date(0);
+		}
+	}
+
 	// DATABASE IMPORT
 	@SuppressWarnings("resource")
 	public static boolean importDB() {
+
 		try {
 			File sd = Environment.getExternalStorageDirectory();
 			File data = Environment.getDataDirectory();
 			if (sd.canWrite()) {
+
 				String currentDBPath = "//data//" + "com.example.kurmanosiuntinys" + "//databases//" + "kurManoSiuntinys.db";
 				String backupDBPath = "//SiuntuSekimas//" + "kurManoSiuntinys.db"; // From SD directory.
 				File backupDB = new File(data, currentDBPath);
@@ -87,23 +117,25 @@ public class C {
 				String targetFolder = "//SiuntuSekimas//";
 				String currentDBPath = "//data//" + "com.example.kurmanosiuntinys" + "//databases//" + "kurManoSiuntinys.db";
 				String backupDBPath = "//SiuntuSekimas//" + "kurManoSiuntinys.db";
+
 				File currentDB = new File(data, currentDBPath);
 				File backupDB = new File(sd, backupDBPath);
-				
+
 				File folder = new File(sd, targetFolder);
 				boolean success = true;
 				if (!folder.exists()) {
-				    success = folder.mkdir();
-				    backupDB.createNewFile();
+					success = folder.mkdir();
+					backupDB.createNewFile();
 				}
 				if (!success) {
-					Log.v("BACKUP","new file error");
-					Log.v("BACKUP",Environment.getExternalStorageState());
-				    return false;
+					Log.v("BACKUP", "new file error");
+					Log.v("BACKUP", Environment.getExternalStorageState());
+					return false;
 				}
 
 				FileChannel src = new FileInputStream(currentDB).getChannel();
 				FileChannel dst = new FileOutputStream(backupDB).getChannel();
+
 				dst.transferFrom(src, 0, src.size());
 				src.close();
 				dst.close();
@@ -112,13 +144,52 @@ public class C {
 				return true;
 			}
 		} catch (Exception e) {
-
 			// Toast.makeText(getApplicationContext(), "Backup Failed!", Toast.LENGTH_SHORT)
 			// .show();
-			Log.v("BACKUP","ex: "+e);
+			Log.v("BACKUP", "ex: " + e);
 			return false;
 		}
 		return false;
+	}
+
+	@SuppressWarnings("resource")
+	public static Boolean exportNums(String numbers) {
+		try {
+			File sd = Environment.getExternalStorageDirectory();
+			String backupNUMPath = "//SiuntuSekimas//" + "kurManoSiuntinys.txt";
+			File backupNUM = new File(sd, backupNUMPath);
+			FileChannel numFile = new FileOutputStream(backupNUM).getChannel();
+			if (numbers != "") {
+				numFile.write(ByteBuffer.wrap(numbers.getBytes("utf-8")));
+			}
+			numFile.close();
+			return true;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	@SuppressWarnings("resource")
+	public static String importNums() {
+		try {
+			File sd = Environment.getExternalStorageDirectory();
+			String backupNUMPath = "//SiuntuSekimas//" + "kurManoSiuntinys.txt"; // From SD directory.
+			File currentNUM = new File(sd, backupNUMPath);
+			FileChannel numFile = new FileInputStream(currentNUM).getChannel();
+			ByteBuffer buff = ByteBuffer.allocate(1024);
+			numFile.read(buff);
+			String result = new String(buff.array(), Charset.forName("UTF-8"));
+			Log.v("RESTORE", result);
+			numFile.close();
+			return result;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 }

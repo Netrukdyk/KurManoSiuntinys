@@ -60,8 +60,6 @@ public class ActivitySettings extends Activity implements OnClickListener {
 			}
 		});
 		findViewById(R.id.btn1).setOnClickListener(this);
-		findViewById(R.id.btn2).setOnClickListener(this);
-		findViewById(R.id.btn3).setOnClickListener(this);
 	}
 
 	@Override
@@ -70,10 +68,6 @@ public class ActivitySettings extends Activity implements OnClickListener {
 			case R.id.btn1 :
 				db.removeAll();
 				Toast.makeText(this, "Database cleared", Toast.LENGTH_SHORT).show();
-				break;
-			case R.id.btn2 :
-				break;
-			case R.id.btn3 :
 				break;
 		}
 	}

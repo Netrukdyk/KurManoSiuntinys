@@ -13,5 +13,7 @@
     <string name="action_info">Apie</string>
     <string name="Status">Būsena</string>
     <string name="empty"></string>
-    <string name="server">Serveris</string> 
+    <string name="server">Serveris</string>
+    <string name="capital_on">TAIP</string> 
+    <string name="capital_off">NE</string> 
 </resources>

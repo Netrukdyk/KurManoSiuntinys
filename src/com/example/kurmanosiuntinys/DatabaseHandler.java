@@ -76,16 +76,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// Getting All Items
-	public List<Item> getAllItems(Boolean excludeTaken) {
+	public List<Item> getAllItems(Boolean excludeTaken, Boolean reverse, Boolean excludeOld) {
 		List<Item> itemList = new ArrayList<Item>();
 		String condition = (excludeTaken) ? " WHERE "+KEY_STATUS+"!=4" : "";
+		
+		condition += (!excludeTaken && excludeOld) ? " WHERE "+KEY_DATE+"> date('now','-30 day')" : "";		
+		condition += (reverse) ? " ORDER BY "+KEY_ID+" DESC" : "";
+
 		// Select All Query
-		String selectQuery = "SELECT * FROM " + TABLE_ITEMS + condition;
+		String selectQuery = "SELECT *, date('now','-30 day') AS xxx FROM " + TABLE_ITEMS + condition;
+		Log.v("Database", selectQuery);
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		if (cursor.moveToFirst()) {
 			do { // looping through all rows and adding to list
+				Log.v("Database", cursor.getInt(0)+" "+cursor.getString(4) + " "+ cursor.getString(5));
 				Item item = new Item();
 				item.setAlias(cursor.getString(1));
 				item.setNumber(cursor.getString(2));
@@ -97,6 +103,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			} while (cursor.moveToNext());
 		}
 		return itemList;
+	}
+	
+	// Get only all number
+	public String getAllItemLite(){
+		String result = "";
+		// Select All Query
+		String selectQuery = "SELECT "+KEY_NUMBER+", "+KEY_ALIAS+" FROM " + TABLE_ITEMS;
+		SQLiteDatabase db = this.getWritableDatabase();
+		Cursor cursor = db.rawQuery(selectQuery, null);
+
+		if (cursor.moveToFirst()) {
+			do { // looping through all rows and adding to list
+				result += cursor.getString(0)+"|"+cursor.getString(1)+"\n";
+			} while (cursor.moveToNext());
+		}		
+		return result;
 	}
 
 	// Adding new item
@@ -166,7 +188,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		List<ItemInfo> itemInfoList = new ArrayList<ItemInfo>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(TABLE_ITEMS_INFO, new String[] { KEY2_ITEM_NUMBER, KEY2_DATE, KEY2_PLACE, KEY2_EXPLAIN }, KEY2_ITEM_NUMBER + "=?",
-				new String[] { String.valueOf(itemNumber) }, null, null, null, null);
+				new String[] { String.valueOf(itemNumber) }, null, null,  KEY2_DATE+" DESC", null);
 		if (cursor.moveToFirst()) {
 			do { // looping through all rows and adding to list
 				ItemInfo itemInfo = new ItemInfo();

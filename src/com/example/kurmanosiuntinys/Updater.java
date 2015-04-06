@@ -51,7 +51,7 @@ public class Updater extends IntentService {
 		Log.v("Updater", "IntentService started");
 
 		// get data from db
-		List<Item> itemList = db.getAllItems(true);
+		List<Item> itemList = db.getAllItems(true, true, false);
 
 		// do http request
 		List<Item> resultList = checkOnline(itemList);
@@ -166,6 +166,7 @@ public class Updater extends IntentService {
 							itemInfo.setPlace(tds.get(1).text()); // place
 							itemInfo.setDate(tds.last().text()); // date
 							item.addItemInfo(itemInfo);
+							item.setDate(itemInfo.getDate());
 						}
 					}
 					

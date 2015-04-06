@@ -53,7 +53,7 @@ public class ActivityTrack extends Activity {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				updatingDialog.dismiss();
-				//String text = intent.getStringExtra("msg");
+				// String text = intent.getStringExtra("msg");
 				Log.v("Track", "Update completed");
 				updateList();
 				// Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
@@ -92,7 +92,7 @@ public class ActivityTrack extends Activity {
 	}
 
 	public void updateList() {
-		updateList(db.getAllItems(false));
+		updateList(db.getAllItems(false, true, true));
 	}
 
 	public void updateList(List<Item> resultList) {
@@ -147,11 +147,11 @@ public class ActivityTrack extends Activity {
 		case R.id.action_restore:
 			restore();
 			return true;
-       case android.R.id.home:
-            Intent homeIntent = new Intent(this, MainActivity.class);
-            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(homeIntent);
-            return true;			
+		case android.R.id.home:
+			Intent homeIntent = new Intent(this, MainActivity.class);
+			homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(homeIntent);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -213,12 +213,27 @@ public class ActivityTrack extends Activity {
 
 	public void backup() {
 		msg = (C.exportDB()) ? "Backup Successful!" : "Backup Failed!";
+		C.exportNums(db.getAllItemLite());
 		updateList();
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
 
 	public void restore() {
-		msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+		// msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+		String imported = C.importNums().trim();
+
+		String[] separated = imported.split("\n");
+		db.removeAll();
+		for (String itemLine : separated) {
+			Log.v("PARSE", itemLine);
+			String[] item = itemLine.split("\\|");
+			Log.v("PARSE2", item[0] + " xxx " + item[1]);
+
+			if (C.checkNumber(item[0])) {
+				db.addItem(new Item(item[1], item[0], 1, C.getDate()));
+			}
+		}
+		msg = separated.length + " imported";
 		updateList();
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
