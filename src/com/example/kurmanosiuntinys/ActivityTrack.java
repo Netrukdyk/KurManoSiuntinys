@@ -219,11 +219,14 @@ public class ActivityTrack extends Activity {
 	}
 
 	public void restore() {
-		// msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
+		msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
 		String imported = C.importNums().trim();
+		
 
 		String[] separated = imported.split("\n");
-		db.removeAll();
+		
+		if(imported != "") db.removeAll();
+		
 		for (String itemLine : separated) {
 			Log.v("PARSE", itemLine);
 			String[] item = itemLine.split("\\|");
@@ -233,8 +236,9 @@ public class ActivityTrack extends Activity {
 				db.addItem(new Item(item[1], item[0], 1, C.getDate()));
 			}
 		}
-		msg = separated.length + " imported";
+		msg = separated.length + " imported";		
 		updateList();
+		refreshData();
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
 	}
 
