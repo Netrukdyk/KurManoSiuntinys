@@ -24,8 +24,10 @@
         android:clipToPadding="false"
         android:divider="@null"
         android:dividerHeight="15dp"
+        android:fastScrollEnabled="true"
         android:paddingBottom="50dp"
-        android:paddingTop="20dp" >
+        android:paddingTop="20dp"
+        android:scrollbarStyle="outsideOverlay" >
 
     </ListView>
 

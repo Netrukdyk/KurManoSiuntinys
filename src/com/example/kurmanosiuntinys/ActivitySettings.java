@@ -13,6 +13,8 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
@@ -28,6 +30,10 @@ public class ActivitySettings extends Activity implements OnClickListener {
 	private final String notifications = "notifications";
 	private final String silence = "silence";
 	private final String autoHide = "auto_hide";
+	private final String timer = "timer";
+	
+	private LinearLayout changeTimer, changeHide;
+	private TextView valueTimer, valueHide, valueSilence, valueShort;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,10 +52,21 @@ public class ActivitySettings extends Activity implements OnClickListener {
 		switchSilence = (Switch) findViewById(R.id.switchSilence);
 		switchAutoHide = (Switch) findViewById(R.id.switchAutoHide);
 		
+		changeTimer = (LinearLayout) findViewById(R.id.changeTimer);
+		valueTimer = (TextView) findViewById(R.id.valueTimer);
+		
+		changeHide = (LinearLayout) findViewById(R.id.changeHide);
+		valueHide = (TextView) findViewById(R.id.valueHide);
+		
+		valueSilence = (TextView) findViewById(R.id.valueSilence);
+		valueShort = (TextView) findViewById(R.id.valueShort);
+		
 		switchAutoUpdate.setChecked((prefs.getInt(autoUpdate, 0)) == 1);
 		switchNotificastions.setChecked((prefs.getInt(notifications, 0)) == 1);
 		switchSilence.setChecked((prefs.getInt(silence, 0)) == 1);
 		switchAutoHide.setChecked((prefs.getInt(autoHide, 0)) == 1);
+		
+		valueTimer.setText(prefs.getInt(timer, 0)+" valandos");
 
 		switchAutoUpdate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
@@ -97,6 +114,7 @@ public class ActivitySettings extends Activity implements OnClickListener {
 		SharedPreferences.Editor editor = prefs.edit();
 		editor.putInt(name, value);
 		editor.apply();
+		Toast.makeText(this, name +" = "+value, Toast.LENGTH_SHORT).show();
 	}
 
 	public void setAlarm() {

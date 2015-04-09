@@ -29,12 +29,12 @@
         </activity>
         <activity
             android:name=".ActivityTrack"
-            android:label="@string/title_activity_track" 
+            android:label="@string/title_activity_track"
             android:parentActivityName="com.example.kurmanosiuntinys.MainActivity" >
         </activity>
         <activity
             android:name=".ActivityItem"
-            android:label="@string/title_activity_item" 
+            android:label="@string/title_activity_item"
             android:parentActivityName="com.example.kurmanosiuntinys.ActivityTrack" >
         </activity>
         <activity
@@ -57,7 +57,6 @@
             android:name=".Updater"
             android:enabled="true" >
         </service>
-        
     </application>
 
 </manifest>
