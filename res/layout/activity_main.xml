@@ -28,11 +28,10 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="25dp"
             android:gravity="center_horizontal"
-            android:text="Lietuvos pašto\nsiuntų sekimas"
+            android:text="Siuntų sekimas Lietuvoje"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/primary_text_light"
-            android:textStyle="bold"
-            android:typeface="monospace" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnTracking"

@@ -219,24 +219,26 @@ public class ActivityTrack extends Activity {
 	}
 
 	public void restore() {
-		msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
-		String imported = C.importNums().trim();
 		
-
+		String imported = C.importNums().trim(); // try import from txt
 		String[] separated = imported.split("\n");
-		
-		if(imported != "") db.removeAll();
-		
-		for (String itemLine : separated) {
-			Log.v("PARSE", itemLine);
-			String[] item = itemLine.split("\\|");
-			Log.v("PARSE2", item[0] + " xxx " + item[1]);
 
-			if (C.checkNumber(item[0])) {
-				db.addItem(new Item(item[1], item[0], 1, C.getDate()));
+		if (imported != "") { // if ok, parse numbers
+			db.removeAll();
+			for (String itemLine : separated) {
+				Log.v("PARSE", itemLine);
+				String[] item = itemLine.split("\\|");
+				Log.v("PARSE2", item[0] + " xxx " + item[1]);
+
+				if (C.checkNumber(item[0])) {
+					db.addItem(new Item(item[1], item[0], 1, C.getDate()));
+				}
 			}
+			msg = separated.length + " imported";
+		} else { // if txt fail, import all db if exists
+			msg = (C.importDB()) ? "Import Successful!" : "Import Failed!";
 		}
-		msg = separated.length + " imported";		
+
 		updateList();
 		refreshData();
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();

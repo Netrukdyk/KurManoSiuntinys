@@ -74,7 +74,7 @@ public class Item {
 	}
 
 	public ItemInfo getLastItemInfo() {
-		return itemInfo != null && !itemInfo.isEmpty() ? itemInfo.get(0) : null;
+		return itemInfo != null && !itemInfo.isEmpty() ? itemInfo.get(itemInfo.size()-1) : null;
 	}
 
 }
