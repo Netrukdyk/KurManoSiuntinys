@@ -22,8 +22,12 @@ public class ActivitySettings extends Activity implements OnClickListener {
 	SharedPreferences prefs;
 	DatabaseHandler db;
 	private PendingIntent pendingIntent;
-	private Switch switchNotificastions, switchAutoUpdate;
-
+	private Switch switchNotificastions, switchAutoUpdate, switchSilence, switchAutoHide;
+	
+	private final String autoUpdate = "auto_update";
+	private final String notifications = "notifications";
+	private final String silence = "silence";
+	private final String autoHide = "auto_hide";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,19 +40,17 @@ public class ActivitySettings extends Activity implements OnClickListener {
 
 		Intent alarmIntent = new Intent(this, Alarm.class);
 		pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
-		switchNotificastions = (Switch) findViewById(R.id.switchNotifications);
+		
 		switchAutoUpdate = (Switch) findViewById(R.id.switchAutoUpdate);
+		switchNotificastions = (Switch) findViewById(R.id.switchNotifications);
+		switchSilence = (Switch) findViewById(R.id.switchSilence);
+		switchAutoHide = (Switch) findViewById(R.id.switchAutoHide);
+		
+		switchAutoUpdate.setChecked((prefs.getInt(autoUpdate, 0)) == 1);
+		switchNotificastions.setChecked((prefs.getInt(notifications, 0)) == 1);
+		switchSilence.setChecked((prefs.getInt(silence, 0)) == 1);
+		switchAutoHide.setChecked((prefs.getInt(autoHide, 0)) == 1);
 
-		switchNotificastions.setChecked((prefs.getInt("notifications", 0)) == 1);
-		switchAutoUpdate.setChecked((prefs.getInt("auto_update", 0)) == 1);
-
-		switchNotificastions.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				setPrefs("notifications", isChecked? 1:0);
-			}
-		});
 		switchAutoUpdate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -56,9 +58,28 @@ public class ActivitySettings extends Activity implements OnClickListener {
 					setAlarm();
 				else
 					unsetAlarm();
-				setPrefs("auto_update", isChecked? 1:0);
+				setPrefs(autoUpdate, isChecked? 1:0);
 			}
 		});
+		switchNotificastions.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				setPrefs(notifications, isChecked? 1:0);
+			}
+		});
+		switchSilence.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				setPrefs(silence, isChecked? 1:0);
+			}
+		});
+		switchAutoHide.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				setPrefs(autoHide, isChecked? 1:0);
+			}
+		});
+		
 		findViewById(R.id.btn1).setOnClickListener(this);
 	}
 
