@@ -26,6 +26,7 @@ public class ActivityItem extends Activity {
 	Item item;
 	ImageButton btnEdit, btnDelete;
 	ProgressDialog	updatingDialog;
+	Bundle extras;
 	
 	@SuppressLint("InflateParams")
 	@Override
@@ -42,7 +43,12 @@ public class ActivityItem extends Activity {
 		logoImg = (ImageView) findViewById(R.id.itemImg);
 		db = new DatabaseHandler(this);
 		
-		Bundle extras = getIntent().getExtras();
+		extras = getIntent().getExtras();
+
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
 		if (extras != null) {
 			String number = extras.getString("item");
 			if (number != null && number != "") {

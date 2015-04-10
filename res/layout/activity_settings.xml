@@ -46,6 +46,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="Intervalas:"
+                    android:textAppearance="?android:attr/textAppearance"
                     android:textColor="@android:color/primary_text_light" />
 
                 <TextView
@@ -56,7 +57,9 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="6 valandos"
+                    android:textAppearance="?android:attr/textAppearance"
                     android:textColor="@android:color/primary_text_light" />
+
             </LinearLayout>
 
             <Switch
@@ -65,7 +68,9 @@
                 android:layout_height="45dp"
                 android:gravity="left|center_vertical"
                 android:text="Garsiniai pranešimai"
+                android:textAppearance="?android:attr/textAppearance"
                 android:textColor="@android:color/primary_text_light" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -87,14 +92,47 @@
                 android:textAppearance="?android:attr/textAppearance"
                 android:textColor="@android:color/primary_text_dark" />
 
-            <TextView
-                android:id="@+id/valueSilence"
+            <LinearLayout
+                android:id="@+id/silence"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:gravity="center"
-                android:text="23:00 - 8:00"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@android:color/primary_text_light" />
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal" >
+
+                <TextView
+                    android:id="@+id/valueSilenceStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_weight="0.50"
+                    android:gravity="right|center_vertical"
+                    android:text="23:00"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@android:color/primary_text_light" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="10dp"
+                    android:gravity="center"
+                    android:text=" - "
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@android:color/primary_text_light" />
+
+                <TextView
+                    android:id="@+id/valueSilenceEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_weight="0.50"
+                    android:gravity="left|center_vertical"
+                    android:text="8:00"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@android:color/primary_text_light" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -122,7 +160,7 @@
                 android:layout_height="45dp"
                 android:gravity="center"
                 android:text="Naujausia viršuje"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearance"
                 android:textColor="@android:color/primary_text_light" />
         </LinearLayout>
 
@@ -156,6 +194,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:text="Senesnes nei:"
+                    android:textAppearance="?android:attr/textAppearance"
                     android:textColor="@android:color/primary_text_light" />
 
                 <TextView
@@ -166,7 +205,9 @@
                     android:layout_weight="1"
                     android:gravity="right"
                     android:text="1 savaitė"
+                    android:textAppearance="?android:attr/textAppearance"
                     android:textColor="@android:color/primary_text_light" />
+
             </LinearLayout>
         </LinearLayout>
 
@@ -194,7 +235,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:text="Ištrinti visus numerius"
+                android:textAppearance="?android:attr/textAppearance"
                 android:textColor="@android:color/primary_text_light" />
+
         </LinearLayout>
     </LinearLayout>
 

@@ -28,6 +28,30 @@ public class C {
 	public static final String	PICKUP		= "Atsiimti paðte";
 	public static final String	DELIVERED	= "Pristatyta";
 
+	// SHARED PREFERENCES VARIANBLES
+	public final static String SWITCH_AUTOUPDATE = "auto_update";
+	public final static String SWITCH_NOTIFICATIONS = "notifications";
+	public final static String SWITCH_SILENCE = "silence";
+	public final static String SWITCH_HIDE = "auto_hide";
+
+	public final static String VALUE_TIMER = "timer";
+	public final static String VALUE_SILENCE_START = "silence_start";
+	public final static String VALUE_SILENCE_END = "silence_end";
+	public final static String VALUE_ORDER = "order";
+	public final static String VALUE_HIDE = "hide";
+	
+	// DEFAULT SHARED PREFERENCES VALUES
+	public final static int DEFAULT_SWITCH_AUTOUPDATE = 1;
+	public final static int DEFAULT_SWITCH_NOTIFICATIONS = 1;
+	public final static int DEFAULT_SWITCH_SILENCE = 1;
+	public final static int DEFAULT_SWITCH_HIDE = 1;
+
+	public final static int DEFAULT_VALUE_TIMER = 6;
+	public final static String DEFAULT_VALUE_SILENCE_START = "23:00";
+	public final static String DEFAULT_VALUE_SILENCE_END = "8:00";
+	public final static int DEFAULT_VALUE_ORDER = 0;
+	public final static int DEFAULT_VALUE_HIDE = 7;
+	
 	enum Type {
 		STATUS, INFO, OTHER// 0, 1, 2
 	}
@@ -165,7 +189,6 @@ public class C {
 			numFile.close();
 			return true;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -186,7 +209,6 @@ public class C {
 			numFile.close();
 			return result;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "";

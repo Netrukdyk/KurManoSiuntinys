@@ -51,7 +51,7 @@ public class Updater extends IntentService {
 		Log.v("Updater", "IntentService started");
 
 		// get data from db
-		List<Item> itemList = db.getAllItems(true, true, false);
+		List<Item> itemList = db.getAllItems(true, true, 0);
 
 		// do http request
 		List<Item> resultList = checkOnline(itemList);

@@ -10,10 +10,12 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,7 +39,7 @@ public class ActivityTrack extends Activity {
 	ImageButton			btnAdd, btnRefresh;
 
 	ProgressDialog		updatingDialog;
-
+	SharedPreferences prefs;
 	String				msg;
 
 	@Override
@@ -45,8 +47,11 @@ public class ActivityTrack extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_track);
 		// getActionBar().setBackgroundDrawable(null);
+		
 		getActionBar().setHomeButtonEnabled(true); // enable home btn
 		getOverflowMenu();
+		
+		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		db = new DatabaseHandler(this);
 
 		receiver = new BroadcastReceiver() {
@@ -75,6 +80,11 @@ public class ActivityTrack extends Activity {
 	@Override
 	protected void onResume() {
 		updateList();
+		super.onResume();
+	}
+	@Override
+	protected void onPause() {
+		updateList();
 		super.onPause();
 	}
 
@@ -92,7 +102,9 @@ public class ActivityTrack extends Activity {
 	}
 
 	public void updateList() {
-		updateList(db.getAllItems(false, true, true));
+		int excludeOlds = (prefs.getInt(C.SWITCH_HIDE, C.DEFAULT_SWITCH_HIDE)==1) ? prefs.getInt(C.VALUE_HIDE, C.DEFAULT_VALUE_HIDE) : 0 ;
+		Boolean reverse = (prefs.getInt(C.VALUE_ORDER, C.DEFAULT_VALUE_ORDER)==0) ? true : false ;
+		updateList(db.getAllItems(false, reverse, excludeOlds));
 	}
 
 	public void updateList(List<Item> resultList) {
