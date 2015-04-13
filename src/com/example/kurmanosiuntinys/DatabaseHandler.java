@@ -63,7 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 */
 
 	// Getting single item
-	public Item getItem(String number) {
+	public Item getItem(String number, Boolean reverse) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ALIAS, KEY_NUMBER, KEY_STATUS, KEY_DATE }, KEY_NUMBER + "=?", new String[] { number }, null, null, null,
 				null);
@@ -71,7 +71,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 		else return null;
 		Item item = new Item(cursor.getString(0), cursor.getString(1), Integer.parseInt(cursor.getString(2)), cursor.getString(3));
-		item.setItemInfo(getItemInfo(number, false));
+		item.setItemInfo(getItemInfo(number, reverse));
 		return item;
 	}
 

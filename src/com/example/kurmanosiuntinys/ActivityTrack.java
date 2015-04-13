@@ -39,7 +39,7 @@ public class ActivityTrack extends Activity {
 	ImageButton			btnAdd, btnRefresh;
 
 	ProgressDialog		updatingDialog;
-	SharedPreferences prefs;
+	SharedPreferences 	prefs;
 	String				msg;
 
 	@Override

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="title_activity_track">Mano siuntos</string>
     <string name="title_activity_about">Apie</string>
     <string name="title_activity_item">Siunta</string>
@@ -14,6 +15,11 @@
     <string name="Status">Būsena</string>
     <string name="empty"></string>
     <string name="server">Serveris</string>
-    <string name="capital_on">TAIP</string> 
-    <string name="capital_off">NE</string> 
+    <string name="capital_on">TAIP</string>
+    <string name="capital_off">NE</string>
+    <string name="title_activity_activity_calculator">Kainų skaičiuoklė</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_activity_codes">Pašto kodų paieška</string>
+    <string name="title_activity_activity_posts">Paštai ir pašto dėžutės</string>
+
 </resources>

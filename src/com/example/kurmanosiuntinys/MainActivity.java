@@ -2,7 +2,6 @@ package com.example.kurmanosiuntinys;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,25 +30,18 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		Intent intent = null;
-		String url = null;
 		switch (v.getId()) {
 			case R.id.btnTracking :
 				intent = new Intent(this, ActivityTrack.class);
 				break;
 			case R.id.btnCalc :
-				url = "http://www.post.lt/lt/pagalba/kainu-skaiciuokle/index/letters";
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse(url));
+				intent = new Intent(this, ActivityCalculator.class);
 				break;
 			case R.id.btnSearch :
-				url = "http://www.post.lt/lt/pagalba/pasto-kodu-paieska/index/address";
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse(url));
+				intent = new Intent(this, ActivityCodes.class);
 				break;
 			case R.id.btnPosts :
-				url = "http://www.post.lt/lt/pagalba/pasto-skyriai-dezutes/index";
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setData(Uri.parse(url));
+				intent = new Intent(this, ActivityPosts.class);
 				break;
 		}
 		startActivity(intent);

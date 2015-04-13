@@ -30,12 +30,12 @@
         <activity
             android:name=".ActivityTrack"
             android:label="@string/title_activity_track"
-            android:parentActivityName="com.example.kurmanosiuntinys.MainActivity" >
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".ActivityItem"
             android:label="@string/title_activity_item"
-            android:parentActivityName="com.example.kurmanosiuntinys.ActivityTrack" >
+            android:parentActivityName=".ActivityTrack" >
         </activity>
         <activity
             android:name=".ActivitySettings"
@@ -57,6 +57,31 @@
             android:name=".Updater"
             android:enabled="true" >
         </service>
+
+        <activity
+            android:name=".ActivityCalculator"
+            android:label="@string/title_activity_activity_calculator"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.kurmanosiuntinys.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ActivityCodes"
+            android:label="@string/title_activity_activity_codes"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.kurmanosiuntinys.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ActivityPosts"
+            android:label="@string/title_activity_activity_posts"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.kurmanosiuntinys.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

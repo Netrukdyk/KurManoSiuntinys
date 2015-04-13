@@ -92,4 +92,15 @@
         </LinearLayout>
     </ScrollView>
 
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ScrollView1"
+        android:gravity="center_horizontal"
+        android:text="Informacija pateikiamia iš www.post.lt"
+        android:textColor="@android:color/primary_text_light" />
+
 </RelativeLayout>

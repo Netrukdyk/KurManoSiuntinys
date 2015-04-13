@@ -6,8 +6,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,170 +27,182 @@ public class ActivityItem extends Activity {
 	DatabaseHandler db;
 	Item item;
 	ImageButton btnEdit, btnDelete;
-	ProgressDialog	updatingDialog;
+	ProgressDialog updatingDialog;
 	Bundle extras;
-	
+	SharedPreferences prefs;
+
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_item);
-		
-		//getActionBar().setBackgroundDrawable(null);
+
+		// getActionBar().setBackgroundDrawable(null);
 		getActionBar().setHomeButtonEnabled(true); // enable home btn
-		
+
+		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		itemAlias = (TextView) findViewById(R.id.itemAlias);
 		itemNumber = (TextView) findViewById(R.id.itemNumber);
 		itemStatus = (TextView) findViewById(R.id.itemStatus);
 		logoImg = (ImageView) findViewById(R.id.itemImg);
 		db = new DatabaseHandler(this);
-		
+
 		extras = getIntent().getExtras();
 
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();
+		setContentView(R.layout.activity_item);
+		String number = "";
 		if (extras != null) {
-			String number = extras.getString("item");
-			if (number != null && number != "") {
-				init(number);
-			}
+			number = extras.getString("item");
+		}
+
+		if (number != null && number != "") {
+			init(number);
 		}
 	}
-	
+
 	@SuppressLint("InflateParams")
-	public void init(String number){
-		item = db.getItem(number);
+	public void init(String number) {
+		Boolean reverse = (prefs.getInt(C.VALUE_ORDER, C.DEFAULT_VALUE_ORDER) == 0) ? true : false;
+		item = db.getItem(number, reverse);
 		itemAlias.setText(item.getAlias());
 		itemNumber.setText(item.getNumber());
 		Item.Status status = item.getStatus();
 
-		int icon = 0;				
+		int icon = 0;
 		switch (status) {
-			case WRONGNUMBER :
-				itemStatus.setText(C.WRONG);
-				icon = R.drawable.ic_status_not_found;
-				break;
-			case NOTFOUND :
-				itemStatus.setText(C.NOINFO);
-				icon = R.drawable.ic_status_not_found;
-				break;
-			case TRANSIT :
-				itemStatus.setText(C.TRANSIT);
-				icon = R.drawable.ic_status_transit;
-				break;
-			case PICKUP :
-				itemStatus.setText(C.PICKUP);
-				icon = R.drawable.ic_status_pickup;
-				break;
-			case DELIVERED :
-				itemStatus.setText(C.DELIVERED);
-				icon = R.drawable.ic_status_delivered;
-				break;
-			default :
-				break;
+		case WRONGNUMBER:
+			itemStatus.setText(C.WRONG);
+			icon = R.drawable.ic_status_not_found;
+			break;
+		case NOTFOUND:
+			itemStatus.setText(C.NOINFO);
+			icon = R.drawable.ic_status_not_found;
+			break;
+		case TRANSIT:
+			itemStatus.setText(C.TRANSIT);
+			icon = R.drawable.ic_status_transit;
+			break;
+		case PICKUP:
+			itemStatus.setText(C.PICKUP);
+			icon = R.drawable.ic_status_pickup;
+			break;
+		case DELIVERED:
+			itemStatus.setText(C.DELIVERED);
+			icon = R.drawable.ic_status_delivered;
+			break;
+		default:
+			break;
 		}
-		if (logoImg != null) logoImg.setImageResource(icon);				
-		
+		if (logoImg != null)
+			logoImg.setImageResource(icon);
+
 		LinearLayout layout = (LinearLayout) findViewById(R.id.itemInfoLayout);
-		
+
 		for (ItemInfo itemInfo : item.getItemInfo()) {
 			View v = getLayoutInflater().inflate(R.layout.item_info, null);
 			TextView date = (TextView) v.findViewById(R.id.date);
 			TextView place = (TextView) v.findViewById(R.id.place);
-			TextView explain = (TextView) v.findViewById(R.id.explain);					
+			TextView explain = (TextView) v.findViewById(R.id.explain);
 			explain.setText(itemInfo.getExplain());
 			place.setText(itemInfo.getPlace());
-			date.setText(itemInfo.getDate());			
+			date.setText(itemInfo.getDate());
 			layout.addView(v, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-		}		
-		
+		}
+
 	}
-	
-	// --- ENTER NEW NUMBER DIALOG -------------------------------------------------
-		@SuppressLint("InflateParams")
-		private void showInputDialog() {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Pridëti naujà numerá");
-			View dialogView = getLayoutInflater().inflate(R.layout.new_dialog, null);
 
-			final EditText number = (EditText) dialogView.findViewById(R.id.dialogNumber);
-			number.setText(item.getNumber());
-			number.requestFocus();
-		
-	        if (C.checkNumber(number.getText().toString())) {
-	        	number.setBackgroundColor(C.GREEN);
-	        } else number.setBackgroundColor(C.RED);
-	        
-			// add OnTextChange LIstener
-			number.addTextChangedListener(new TextValidator(number) {
-			    @Override public void validate(TextView textView, String text) {
-			        if (C.checkNumber(text)) {
-			        	number.setBackgroundColor(C.GREEN);
-			        } else number.setBackgroundColor(C.RED);
-			     }
-			 });
-			final EditText alias = (EditText) dialogView.findViewById(R.id.dialogAlias);
-			alias.setText(item.getAlias());
-			builder.setView(dialogView);
-			builder.setPositiveButton("OK", null);
-			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					dialog.dismiss();
-				}
-			});
+	// --- ENTER NEW NUMBER DIALOG
+	// -------------------------------------------------
+	@SuppressLint("InflateParams")
+	private void showInputDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Pridëti naujà numerá");
+		View dialogView = getLayoutInflater().inflate(R.layout.new_dialog, null);
 
-			final AlertDialog dialog = builder.create();
-			dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-			dialog.show();
-			dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener(){
+		final EditText number = (EditText) dialogView.findViewById(R.id.dialogNumber);
+		number.setText(item.getNumber());
+		number.requestFocus();
+
+		if (C.checkNumber(number.getText().toString())) {
+			number.setBackgroundColor(C.GREEN);
+		} else
+			number.setBackgroundColor(C.RED);
+
+		// add OnTextChange LIstener
+		number.addTextChangedListener(new TextValidator(number) {
 			@Override
-				public void onClick(View v){			
-					String myAlias = (alias.getText().toString() == "") ? "Siuntinys" : alias.getText().toString();
-					String myNumber = number.getText().toString();
-					item.setAlias(myAlias);
-					item.setNumber(myNumber);
-					if (C.checkNumber(myNumber)) {					
-						db.updateItem(item);
-						init(item.getNumber());
-						//refreshData();
-						C.exportDB();
-						C.exportNums(db.getAllItemLite());
-						dialog.dismiss();
-					} else{						
-						Toast.makeText(ActivityItem.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
-					}
-						
-				}
-			});
-		}
-		
-		public void refreshData() {
-			// service intent
-			final Intent msgIntent = new Intent(this, Updater.class);
+			public void validate(TextView textView, String text) {
+				if (C.checkNumber(text)) {
+					number.setBackgroundColor(C.GREEN);
+				} else
+					number.setBackgroundColor(C.RED);
+			}
+		});
+		final EditText alias = (EditText) dialogView.findViewById(R.id.dialogAlias);
+		alias.setText(item.getAlias());
+		builder.setView(dialogView);
+		builder.setPositiveButton("OK", null);
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
 
-			updatingDialog = new ProgressDialog(ActivityItem.this);
-			updatingDialog.setMessage("Atnaujinama...");
-			updatingDialog.setCancelable(false);
-			updatingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Atðaukti", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+		final AlertDialog dialog = builder.create();
+		dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		dialog.show();
+		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String myAlias = (alias.getText().toString() == "") ? "Siuntinys" : alias.getText().toString();
+				String myNumber = number.getText().toString();
+				item.setAlias(myAlias);
+				item.setNumber(myNumber);
+				if (C.checkNumber(myNumber)) {
+					db.updateItem(item);
+					init(item.getNumber());
+					// refreshData();
+					C.exportDB();
+					C.exportNums(db.getAllItemLite());
 					dialog.dismiss();
+				} else {
+					Toast.makeText(ActivityItem.this, "Neteisingi duomenys", Toast.LENGTH_SHORT).show();
 				}
-			});
-			updatingDialog.setOnDismissListener(new OnDismissListener() {
-				@Override
-				public void onDismiss(DialogInterface dialog) {
-					stopService(msgIntent);
-				}
-			});
-			updatingDialog.show();
 
-			// call service
-			startService(msgIntent);
-		}
+			}
+		});
+	}
+
+	public void refreshData() {
+		// service intent
+		final Intent msgIntent = new Intent(this, Updater.class);
+
+		updatingDialog = new ProgressDialog(ActivityItem.this);
+		updatingDialog.setMessage("Atnaujinama...");
+		updatingDialog.setCancelable(false);
+		updatingDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Atðaukti", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		updatingDialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				stopService(msgIntent);
+			}
+		});
+		updatingDialog.show();
+
+		// call service
+		startService(msgIntent);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -200,21 +214,25 @@ public class ActivityItem extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
 		switch (menuItem.getItemId()) {
-			case R.id.action_about :
-				Intent intent = new Intent(this, ActivityAbout.class);
-				startActivity(intent);
-				return true;
-			case R.id.action_edit :
-				showInputDialog();
-				return true;
-			case R.id.action_delete:
-				db.deleteItem(item);
-				C.exportDB();
-				C.exportNums(db.getAllItemLite());
-				finish();
-				return true;
-			default :
-				return super.onOptionsItemSelected(menuItem);
+		case R.id.action_about:
+			Intent intent = new Intent(this, ActivityAbout.class);
+			startActivity(intent);
+			return true;
+		case R.id.action_edit:
+			showInputDialog();
+			return true;
+		case R.id.action_delete:
+			db.deleteItem(item);
+			C.exportDB();
+			C.exportNums(db.getAllItemLite());
+			finish();
+			return true;
+		case R.id.action_settings:
+			Intent intentSettings = new Intent(this, ActivitySettings.class);
+			startActivity(intentSettings);
+			return true;
+		default:
+			return super.onOptionsItemSelected(menuItem);
 		}
 	}
 

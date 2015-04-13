@@ -68,7 +68,7 @@ public class C {
 		String re1 = "([a-z][a-z][0-9]{8,9}[a-z][a-z])";
 		Pattern p = Pattern.compile(re1, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-		if (p.matcher(number).find())
+		if (p.matcher(number).matches())
 			return true;
 
 		return false;
