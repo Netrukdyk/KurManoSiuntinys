@@ -145,35 +145,6 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp" >
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_vertical"
-                android:text="Informacijos rikiavimas"
-                android:textAppearance="?android:attr/textAppearance" />
-
-            <TextView
-                android:id="@+id/valueShort"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:gravity="center"
-                android:text="Naujausia viršuje"
-                android:textAppearance="?android:attr/textAppearance"
-                android:textColor="@android:color/primary_text_light" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/settings_background"
-            android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp" >
-
             <Switch
                 android:id="@+id/switchAutoHide"
                 android:layout_width="match_parent"

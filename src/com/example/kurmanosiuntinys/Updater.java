@@ -45,7 +45,6 @@ public class Updater extends IntentService {
 		super.onCreate();
 		this.db = new DatabaseHandler(this);
 		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		reverse = (prefs.getInt(C.VALUE_ORDER, C.DEFAULT_VALUE_ORDER)==0) ? true : false ;
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class Updater extends IntentService {
 		Log.v("Updater", "IntentService started");
 
 		// get data from db
-		List<Item> itemList = db.getAllItems(true, true, 0);
+		List<Item> itemList = db.getAllItems(true, 0);
 
 		// do http request
 		List<Item> resultList = checkOnline(itemList);
@@ -158,7 +157,7 @@ public class Updater extends IntentService {
 				for (Element table : tables) {
 					Item item = new Item();
 					item.setNumber(table.getElementsByTag("strong").text());
-					item.setAlias(db.getItem(item.getNumber(), reverse).getAlias());
+					item.setAlias(db.getItem(item.getNumber()).getAlias());
 					for (Element row : table.select("tr")) {
 						Elements tds = row.select("td");
 						if (tds.size() > 2) {
@@ -188,7 +187,7 @@ public class Updater extends IntentService {
 			for (Element number : errors) {
 				Item item = new Item();
 				item.setNumber(number.getElementsByTag("strong").text());
-				item.setAlias(db.getItem(item.getNumber(), reverse).getAlias());
+				item.setAlias(db.getItem(item.getNumber()).getAlias());
 
 				Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
 				if (!details.isEmpty())

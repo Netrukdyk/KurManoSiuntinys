@@ -103,8 +103,7 @@ public class ActivityTrack extends Activity {
 
 	public void updateList() {
 		int excludeOlds = (prefs.getInt(C.SWITCH_HIDE, C.DEFAULT_SWITCH_HIDE)==1) ? prefs.getInt(C.VALUE_HIDE, C.DEFAULT_VALUE_HIDE) : 0 ;
-		Boolean reverse = (prefs.getInt(C.VALUE_ORDER, C.DEFAULT_VALUE_ORDER)==0) ? true : false ;
-		updateList(db.getAllItems(false, reverse, excludeOlds));
+		updateList(db.getAllItems(false, excludeOlds));
 	}
 
 	public void updateList(List<Item> resultList) {

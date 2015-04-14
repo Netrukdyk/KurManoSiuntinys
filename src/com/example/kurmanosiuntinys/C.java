@@ -37,7 +37,6 @@ public class C {
 	public final static String VALUE_TIMER = "timer";
 	public final static String VALUE_SILENCE_START = "silence_start";
 	public final static String VALUE_SILENCE_END = "silence_end";
-	public final static String VALUE_ORDER = "order";
 	public final static String VALUE_HIDE = "hide";
 	
 	// DEFAULT SHARED PREFERENCES VALUES
@@ -49,7 +48,6 @@ public class C {
 	public final static int DEFAULT_VALUE_TIMER = 6;
 	public final static String DEFAULT_VALUE_SILENCE_START = "23:00";
 	public final static String DEFAULT_VALUE_SILENCE_END = "8:00";
-	public final static int DEFAULT_VALUE_ORDER = 0;
 	public final static int DEFAULT_VALUE_HIDE = 7;
 	
 	enum Type {

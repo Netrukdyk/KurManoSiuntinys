@@ -67,8 +67,7 @@ public class ActivityItem extends Activity {
 
 	@SuppressLint("InflateParams")
 	public void init(String number) {
-		Boolean reverse = (prefs.getInt(C.VALUE_ORDER, C.DEFAULT_VALUE_ORDER) == 0) ? true : false;
-		item = db.getItem(number, reverse);
+		item = db.getItem(number);
 		itemAlias.setText(item.getAlias());
 		itemNumber.setText(item.getNumber());
 		Item.Status status = item.getStatus();

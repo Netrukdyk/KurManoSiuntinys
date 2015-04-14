@@ -3,8 +3,6 @@ package com.example.kurmanosiuntinys;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
 public class Item {
 	private String			alias, number, date;
 	private Status			status;
@@ -74,7 +72,7 @@ public class Item {
 	}
 
 	public ItemInfo getLastItemInfo() {
-		return itemInfo != null && !itemInfo.isEmpty() ? itemInfo.get(itemInfo.size()-1) : null;
+		return itemInfo != null && !itemInfo.isEmpty() ? itemInfo.get(itemInfo.size()-1) : null; //itemInfo.size()-1
 	}
 
 }

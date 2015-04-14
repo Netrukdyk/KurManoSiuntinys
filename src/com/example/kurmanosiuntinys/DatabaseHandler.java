@@ -63,7 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	 */
 
 	// Getting single item
-	public Item getItem(String number, Boolean reverse) {
+	public Item getItem(String number) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(TABLE_ITEMS, new String[] { KEY_ALIAS, KEY_NUMBER, KEY_STATUS, KEY_DATE }, KEY_NUMBER + "=?", new String[] { number }, null, null, null,
 				null);
@@ -71,17 +71,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 			cursor.moveToFirst();
 		else return null;
 		Item item = new Item(cursor.getString(0), cursor.getString(1), Integer.parseInt(cursor.getString(2)), cursor.getString(3));
-		item.setItemInfo(getItemInfo(number, reverse));
+		item.setItemInfo(getItemInfo(number));
 		return item;
 	}
 
 	// Getting All Items
-	public List<Item> getAllItems(Boolean excludeTaken, Boolean reverse, int excludeOld) {
+	public List<Item> getAllItems(Boolean excludeTaken, int excludeOld) {
 		List<Item> itemList = new ArrayList<Item>();
 		String condition = (excludeTaken) ? " WHERE "+KEY_STATUS+"!=4" : "";
 		
 		condition += (!excludeTaken && excludeOld>0) ? " WHERE "+KEY_DATE+"> date('now','-"+excludeOld+" day')" : "";		
-		condition += (reverse) ? " ORDER BY "+KEY_ID+" DESC" : "";
+		condition += " ORDER BY "+KEY_ID+" ASC";
 
 		// Select All Query
 		String selectQuery = "SELECT *, date('now','-"+excludeOld+" day') AS xxx FROM " + TABLE_ITEMS + condition;
@@ -97,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 				item.setNumber(cursor.getString(2));
 				item.setStatus(Integer.parseInt(cursor.getString(3)));
 				item.setDate(cursor.getString(4));
-				item.setItemInfo(getItemInfo(item.getNumber(), reverse));
+				item.setItemInfo(getItemInfo(item.getNumber()));
 
 				itemList.add(item); // Adding contact to list
 			} while (cursor.moveToNext());
@@ -137,7 +137,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	// Updating single item
 	public int updateItem(Item item) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		int x = this.getItemInfo(item.getNumber(), false).size();
+		int x = this.getItemInfo(item.getNumber()).size();
 		Log.v("DB BUVO",x+"");
 		int y = item.getItemInfo().size();
 		Log.v("DB YRA",y+"");
@@ -184,12 +184,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	}
 
 	// --- ITEM INFO metodai-------------------------------------------------------
-	public List<ItemInfo> getItemInfo(String itemNumber, Boolean reverse) {
-		String order = reverse ? " DESC" : " ASC";
+	public List<ItemInfo> getItemInfo(String itemNumber) {
 		List<ItemInfo> itemInfoList = new ArrayList<ItemInfo>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(TABLE_ITEMS_INFO, new String[] { KEY2_ITEM_NUMBER, KEY2_DATE, KEY2_PLACE, KEY2_EXPLAIN }, KEY2_ITEM_NUMBER + "=?",
-				new String[] { String.valueOf(itemNumber) }, null, null,  KEY2_DATE+order, null);
+				new String[] { String.valueOf(itemNumber) }, null, null,  KEY2_ID+" ASC", null);
 		if (cursor.moveToFirst()) {
 			do { // looping through all rows and adding to list
 				ItemInfo itemInfo = new ItemInfo();

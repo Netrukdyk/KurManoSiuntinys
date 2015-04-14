@@ -37,7 +37,7 @@ public class ActivitySettings extends Activity implements OnClickListener {
 
 
 	private LinearLayout changeTimer, changeHide, layoutSilence;
-	private TextView valueTimer, valueHide, valueSilenceStart, valueSilenceEnd, valueShort;
+	private TextView valueTimer, valueHide, valueSilenceStart, valueSilenceEnd;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +66,7 @@ public class ActivitySettings extends Activity implements OnClickListener {
 		layoutSilence = (LinearLayout) findViewById(R.id.silence);
 		valueSilenceStart = (TextView) findViewById(R.id.valueSilenceStart);
 		valueSilenceEnd = (TextView) findViewById(R.id.valueSilenceEnd);
-
-		valueShort = (TextView) findViewById(R.id.valueShort);
-
+		
 		updateValues();
 
 		changeTimer.setOnClickListener(new OnClickListener() {
@@ -92,13 +90,6 @@ public class ActivitySettings extends Activity implements OnClickListener {
 			public void onClick(View v) {
 				DialogFragment newFragment = new TimePickerFragment();
 				newFragment.show(getFragmentManager(), "timeEnd");
-			}
-		});
-
-		valueShort.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showShortDialog();
 			}
 		});
 		
@@ -161,8 +152,6 @@ public class ActivitySettings extends Activity implements OnClickListener {
 		valueSilenceStart.setText(prefs.getString(C.VALUE_SILENCE_START, C.DEFAULT_VALUE_SILENCE_START));
 		valueSilenceEnd.setText(prefs.getString(C.VALUE_SILENCE_END, C.DEFAULT_VALUE_SILENCE_END));
 
-		valueShort.setText(prefs.getInt(C.VALUE_ORDER, C.DEFAULT_VALUE_ORDER) == 0 ? "Naujausia virðuje" : "Seniausia virðuje");
-		
 		valueHide.setText(prefs.getInt(C.VALUE_HIDE, C.DEFAULT_VALUE_HIDE) + " dienos");
 	}
 
@@ -211,21 +200,6 @@ public class ActivitySettings extends Activity implements OnClickListener {
 
 		}
 	} // end timer picker
-
-	private void showShortDialog() {
-		final CharSequence rikiavimas[] = new CharSequence[] { "Naujausia virðuje", "Seniausia virðuje" };
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setItems(rikiavimas, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				setPrefs(C.VALUE_ORDER, which);
-			}
-		});
-		builder.setTitle("Rikiavimo bûdas:");
-		final AlertDialog dialog = builder.create();
-		dialog.show();
-	}
 	
 	private void showHideDialog(){
 		final CharSequence hideValues[] = new CharSequence[] { "7", "14", "28", "90" };
