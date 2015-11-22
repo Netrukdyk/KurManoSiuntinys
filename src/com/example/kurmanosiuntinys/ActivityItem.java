@@ -30,6 +30,8 @@ public class ActivityItem extends Activity {
 	ProgressDialog updatingDialog;
 	Bundle extras;
 	SharedPreferences prefs;
+	String number;
+	LinearLayout itemInfoLayout;
 
 	@SuppressLint("InflateParams")
 	@Override
@@ -43,28 +45,32 @@ public class ActivityItem extends Activity {
 		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		itemAlias = (TextView) findViewById(R.id.itemAlias);
 		itemNumber = (TextView) findViewById(R.id.itemNumber);
-		itemStatus = (TextView) findViewById(R.id.itemStatus);
+		itemStatus = (TextView) findViewById(R.id.iemStatus);
 		logoImg = (ImageView) findViewById(R.id.itemImg);
 		db = new DatabaseHandler(this);
-
+		itemInfoLayout = (LinearLayout) findViewById(R.id.itemInfoLayout);
+		
 		extras = getIntent().getExtras();
+		if (extras != null) {
+			number = extras.getString("item");
+		}
 
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		setContentView(R.layout.activity_item);
-		String number = "";
-		if (extras != null) {
-			number = extras.getString("item");
-		}
-
+		
+		itemInfoLayout.removeAllViews();
 		if (number != null && number != "") {
 			init(number);
 		}
 	}
-
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+	
 	@SuppressLint("InflateParams")
 	public void init(String number) {
 		item = db.getItem(number);
@@ -100,7 +106,10 @@ public class ActivityItem extends Activity {
 		if (logoImg != null)
 			logoImg.setImageResource(icon);
 
-		LinearLayout layout = (LinearLayout) findViewById(R.id.itemInfoLayout);
+		
+		if(itemInfoLayout != null){ // iðsivalom prieð uþpildant
+			itemInfoLayout.removeAllViews();
+		}
 
 		for (ItemInfo itemInfo : item.getItemInfo()) {
 			View v = getLayoutInflater().inflate(R.layout.item_info, null);
@@ -110,7 +119,7 @@ public class ActivityItem extends Activity {
 			explain.setText(itemInfo.getExplain());
 			place.setText(itemInfo.getPlace());
 			date.setText(itemInfo.getDate());
-			layout.addView(v, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+			itemInfoLayout.addView(v, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 		}
 
 	}

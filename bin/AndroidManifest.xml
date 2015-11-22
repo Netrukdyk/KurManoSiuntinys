@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.kurmanosiuntinys"
-    android:versionCode="9"
-    android:versionName="0.9" >
+    android:versionCode="10"
+    android:versionName="0.93" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -39,7 +39,8 @@
         </activity>
         <activity
             android:name=".ActivitySettings"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ActivityTrack" >
         </activity>
         <activity
             android:name=".ActivityAbout"

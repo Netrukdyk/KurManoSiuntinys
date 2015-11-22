@@ -202,7 +202,7 @@ public class ActivitySettings extends Activity implements OnClickListener {
 	} // end timer picker
 	
 	private void showHideDialog(){
-		final CharSequence hideValues[] = new CharSequence[] { "7", "14", "28", "90" };
+		final CharSequence hideValues[] = new CharSequence[] { "7", "14", "28", "60", "90" };
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setItems(hideValues, new DialogInterface.OnClickListener() {

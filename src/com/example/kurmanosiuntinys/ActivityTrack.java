@@ -15,6 +15,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -41,6 +42,8 @@ public class ActivityTrack extends Activity {
 	ProgressDialog		updatingDialog;
 	SharedPreferences 	prefs;
 	String				msg;
+	ListView 			myListView;
+	Parcelable 			state;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +83,35 @@ public class ActivityTrack extends Activity {
 	@Override
 	protected void onResume() {
 		updateList();
+		if(state != null) {	        
+	        myListView.onRestoreInstanceState(state);
+	    }
 		super.onResume();
 	}
 	@Override
 	protected void onPause() {
-		updateList();
+		//updateList();
+		state = myListView.onSaveInstanceState();
 		super.onPause();
 	}
-
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putParcelable("STATE_SCROLL", state);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		state = savedInstanceState.getParcelable("STATE_SCROLL");
+		if(state != null) {	        
+	        myListView.onRestoreInstanceState(state);
+	    }
+	    Log.e("STATE", "RESTORE");
+	    super.onRestoreInstanceState(savedInstanceState);
+	    
+	}
+	
 	private void getOverflowMenu() {
 		try {
 			ViewConfiguration config = ViewConfiguration.get(this);
@@ -107,7 +131,7 @@ public class ActivityTrack extends Activity {
 	}
 
 	public void updateList(List<Item> resultList) {
-		ListView myListView = (ListView) findViewById(R.id.listItems);
+		myListView = (ListView) findViewById(R.id.listItems);
 		ListAdapter customAdapter = new ListAdapter(this, R.layout.list, resultList);
 		//
 		// TextView footer = (TextView) view.findViewById(R.id.loadMore);
@@ -122,7 +146,7 @@ public class ActivityTrack extends Activity {
 				// Toast.makeText(getBaseContext(), item, Toast.LENGTH_LONG).show();
 				Intent i = new Intent(getApplicationContext(), ActivityItem.class);
 				i.putExtra("item", number.getText().toString());
-				startActivity(i);
+				startActivity(i);				
 			}
 		});
 	}

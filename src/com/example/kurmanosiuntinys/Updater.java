@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -127,29 +132,36 @@ public class Updater extends IntentService {
 		if (numbers.size() == 0)
 			return resultList;
 
-
-
 		// formuojam get uþklausà
 		String query = "";
 		for (Item number : numbers)
-			query += "%0D%0A" + number.getNumber();
-
-		query = query.substring(6); // nukerpa pirmà new line
+			query += number.getNumber() + '\n';
+			//query += "%0D%0A" + number.getNumber();
+			
+		//query = query.substring(1); // nukerpa pirmà new line
 		Log.v("Updater", "GET Query=" + query);
 
 		InputStream in = null;
+
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
-			HttpGet request = new HttpGet();
-			URI website = new URI("http://www.post.lt/lt/pagalba/siuntu-paieska/index?num=" + query);
-			request.setURI(website);
-			HttpResponse response = httpclient.execute(request);
+			HttpPost httppost = new HttpPost("http://www.post.lt/lt/pagalba/siuntu-paieska");
+			
+	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+	        nameValuePairs.add(new BasicNameValuePair("parcel_numbers", query));
+	        nameValuePairs.add(new BasicNameValuePair("form_id", "shipment_tracking_search_form"));
+	        nameValuePairs.add(new BasicNameValuePair("op", "Paieðka"));
+	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+	        HttpResponse response = httpclient.execute(httppost);
+			
 			in = response.getEntity().getContent();
 
 			// --------- Parse HTML ----------------------------------------
 			String html = convertInputStreamToString(in);
 			Log.v("SIZE", html.length() + "");
 			Document doc = Jsoup.parse(html);
+			//Log.v("HTML",html);
 			// ------------- FOUND -------------------------
 			Elements tables = doc.select("table");
 			Log.v("JSoup", tables.size() + " tables");
@@ -172,9 +184,10 @@ public class Updater extends IntentService {
 					}
 					
 					// STATUS RULES
-					if (item.getLastItemInfo().getExplain().contains("Siunta pristatyta ir áteikta gavëjui"))
+					ItemInfo lastInfo = item.getLastItemInfo(true);
+					if (lastInfo.getExplain().contains("Siunta pristatyta ir áteikta gavëjui"))
 						item.setStatus(Item.Status.DELIVERED);
-					else if (item.getLastItemInfo().getExplain().contains("siunta perduota kurjeriui/laiðkininkui arba palikta paðte"))
+					else if (lastInfo.getExplain().contains("siunta perduota kurjeriui/laiðkininkui arba palikta paðte"))
 						item.setStatus(Item.Status.PICKUP);
 					else
 						item.setStatus(Item.Status.TRANSIT);
@@ -182,14 +195,20 @@ public class Updater extends IntentService {
 				}
 			}
 			// ------------- NOT FOUND ----------------------
-			Elements errors = doc.getElementsByClass("notfound");
+			Elements errors = doc.select(".messages.error ul li");
+			if(errors.size() == 0) {
+				errors = doc.select(".messages.error");				
+			}
 			Log.v("JSoup", errors.size() + " errors");
 			for (Element number : errors) {
 				Item item = new Item();
-				item.setNumber(number.getElementsByTag("strong").text());
+				
+				String input = number.text().replace("Klaidos þinutë", "");
+				String word = input.substring(0, input.indexOf(' '));
+				item.setNumber(word);
 				item.setAlias(db.getItem(item.getNumber()).getAlias());
 
-				Elements details = number.getElementsContainingOwnText("duomenø rasti nepavyko");
+				Elements details = number.getElementsContainingOwnText("Siunta nerasta");
 				if (!details.isEmpty())
 					item.setStatus(Item.Status.NOTFOUND);
 				else {
@@ -201,10 +220,12 @@ public class Updater extends IntentService {
 			}
 			doc = null;
 			// --------- End Parse HTML -----------------------------------
-			// publishProgress(text); // rodyti progresà kai tikrina
-		} catch (Exception e) {
-			Log.e("log_tag", "Error in http connection " + e.toString());
-		}
+			// publishProgress(text); // rodyti progresà kai tikrina	
+	    } catch (ClientProtocolException e) {
+	    	Log.e("log_tag", "Error in http connection " + e.toString());
+	    } catch (IOException e) {
+	    	Log.e("log_tag", "IO Error connection " + e.toString());
+	    }
 		return resultList;
 	}
 

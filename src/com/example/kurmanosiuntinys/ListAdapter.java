@@ -30,7 +30,7 @@ public class ListAdapter extends ArrayAdapter<Item> {
 		}
 
 		Item myItem = getItem(position);
-		ItemInfo myItemInfo = myItem.getLastItemInfo();
+		ItemInfo myItemInfo = myItem.getLastItemInfo(true);
 
 		if (myItem != null) {
 			TextView aliasText = (TextView) v.findViewById(R.id.alias);

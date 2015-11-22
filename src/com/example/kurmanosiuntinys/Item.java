@@ -71,8 +71,12 @@ public class Item {
 		this.itemInfo.add(itemInfo);
 	}
 
-	public ItemInfo getLastItemInfo() {
+	public ItemInfo getLastItemInfo(Boolean lastOnTop) {
 		return itemInfo != null && !itemInfo.isEmpty() ? itemInfo.get(itemInfo.size()-1) : null; //itemInfo.size()-1
 	}
+	
+	public ItemInfo getLastItemInfo() {
+		return itemInfo != null && !itemInfo.isEmpty() ? itemInfo.get(0) : null; //itemInfo.size()-1
+	}	
 
 }

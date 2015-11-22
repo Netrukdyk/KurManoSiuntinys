@@ -79,19 +79,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public List<Item> getAllItems(Boolean excludeTaken, int excludeOld) {
 		List<Item> itemList = new ArrayList<Item>();
 		String condition = (excludeTaken) ? " WHERE "+KEY_STATUS+"!=4" : "";
-		
 		condition += (!excludeTaken && excludeOld>0) ? " WHERE "+KEY_DATE+"> date('now','-"+excludeOld+" day')" : "";		
-		condition += " ORDER BY "+KEY_ID+" ASC";
+		condition += " ORDER BY "+KEY_DATE+" DESC";
 
 		// Select All Query
 		String selectQuery = "SELECT *, date('now','-"+excludeOld+" day') AS xxx FROM " + TABLE_ITEMS + condition;
-		Log.v("Database", selectQuery);
+		//Log.e("Database", selectQuery);
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		if (cursor.moveToFirst()) {
 			do { // looping through all rows and adding to list
-				Log.v("Database", cursor.getInt(0)+" "+cursor.getString(4) + " "+ cursor.getString(5));
+				//Log.v("Database", cursor.getInt(0)+" "+cursor.getString(4) + " "+ cursor.getString(5));
 				Item item = new Item();
 				item.setAlias(cursor.getString(1));
 				item.setNumber(cursor.getString(2));
@@ -138,13 +137,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 	public int updateItem(Item item) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		int x = this.getItemInfo(item.getNumber()).size();
-		Log.v("DB BUVO",x+"");
+		//Log.v("DB BUVO",x+"");
 		int y = item.getItemInfo().size();
-		Log.v("DB YRA",y+"");
+		//Log.v("DB YRA",y+"");
 		ContentValues values = new ContentValues();
 		values.put(KEY_ALIAS, item.getAlias());
 		values.put(KEY_NUMBER, item.getNumber());
-		values.put(KEY_STATUS, item.getStatusInt());		
+		values.put(KEY_STATUS, item.getStatusInt());
+		values.put(KEY_DATE, item.getDate());
 		addItemsInfo(item.getItemInfo());
 		// updating row
 		db.update(TABLE_ITEMS, values, KEY_NUMBER + " = ?", new String[] { String.valueOf(item.getNumber()) });
@@ -188,7 +188,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 		List<ItemInfo> itemInfoList = new ArrayList<ItemInfo>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.query(TABLE_ITEMS_INFO, new String[] { KEY2_ITEM_NUMBER, KEY2_DATE, KEY2_PLACE, KEY2_EXPLAIN }, KEY2_ITEM_NUMBER + "=?",
-				new String[] { String.valueOf(itemNumber) }, null, null,  KEY2_ID+" ASC", null);
+				new String[] { String.valueOf(itemNumber) }, null, null, KEY2_ID +" DESC", null);
 		if (cursor.moveToFirst()) {
 			do { // looping through all rows and adding to list
 				ItemInfo itemInfo = new ItemInfo();
@@ -205,14 +205,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 	public void addItemsInfo(List<ItemInfo> itemsInfo) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		for(ItemInfo itemInfo : itemsInfo){		
+		for(ItemInfo itemInfo : itemsInfo){
 			ContentValues values = new ContentValues();
 			values.put(KEY2_ITEM_NUMBER, itemInfo.getItemNumber());
 			values.put(KEY2_DATE, itemInfo.getDate());
 			values.put(KEY2_PLACE, itemInfo.getPlace());
 			values.put(KEY2_EXPLAIN, itemInfo.getExplain());
 
-			//db.insert(TABLE_ITEMS_INFO, null, values); // Inserting Row		
+			//db.insert(TABLE_ITEMS_INFO, null, values); // Inserting Row
 			db.insertWithOnConflict(TABLE_ITEMS_INFO, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 		}
 		//db.close(); // Closing database connection
